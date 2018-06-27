@@ -38,7 +38,7 @@ module Kamaze::DockerImage::Concern::Setup
   # @return [Hash]
   def default_commands
     {
-      build: ['build', '%<opt_t>s', '%<name>s:%<version>s', '--rm', '%<path>s'],
+      build: ['build', '--tag', '%<name>s:%<version>s', '--rm', '%<path>s'],
       exec: ['exec', '%<opt_it>s', '%<run_as>s'],
       run: ['run', '%<opt_it>s', '%<name>s:%<version>s'],
       start: ['run', '-d', '--name', '%<run_as>s', '%<name>s:%<version>s'],
