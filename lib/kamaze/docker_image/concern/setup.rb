@@ -18,6 +18,8 @@ module Kamaze::DockerImage::Concern::Setup
   # @param [Array<Thread::Backtrace::Location>] locations
   def setup(locations)
     @name = nil
+    @version = 'latest'
+
     @verbose = $stdout.tty? && $stderr.tty?
     @tasks_load = true
     @tasks_ns = nil
@@ -40,7 +42,6 @@ module Kamaze::DockerImage::Concern::Setup
       exec: ['exec', '%<opt_it>s', '%<run_as>s'],
       run: ['run', '%<opt_it>s', '%<name>s:%<version>s'],
       start: ['run', '-d', '--name', '%<run_as>s', '%<name>s:%<version>s'],
-      'started?': ['inspect', '-f', '{{.State.Running}}', '%<run_as>s'],
       stop: ['rm', '-f', '%<run_as>s']
     }
   end

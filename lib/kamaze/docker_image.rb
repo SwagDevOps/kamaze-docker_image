@@ -9,11 +9,41 @@ end
 
 # Describe a docker image
 class Kamaze::DockerImage
+  # Get commands
+  #
+  # Commands as run by runner
+  #
+  # @see Kamaze::DockerImage::Runner#command
+  # @see Kamaze::DockerImage::Concern::Setup#default_commands
+  #
+  # @return [Hash]
   attr_reader :commands
+
+  # Get image name
+  #
+  # @return [String]
   attr_reader :name
+
+  # Get version
+  #
+  # @return [String]
   attr_reader :version
+
+  # Get namespace used for tasks
+  #
+  # @return [String|Symbol|nil]
   attr_reader :tasks_ns
+
+  # Get name used to run container
+  #
+  # @return [String]
   attr_reader :run_as
+
+  # Get default command for ``exec``
+  #
+  # @see Kamaze::DockerImage::Runner#exec
+  #
+  # @return [String]
   attr_reader :exec_command
 
   autoload :Pathname, 'pathname'
@@ -22,9 +52,16 @@ class Kamaze::DockerImage
   autoload :Loader, "#{__dir__}/docker_image/loader"
   autoload :VERSION, "#{__dir__}/docker_image/version"
 
+  [:setup, :public_attrs].each do |req|
+    require_relative "#{__dir__}/docker_image/concern/#{req}"
+  end
+
+  include Concern::Setup
+  include Concern::PublicAttrs
+
   # @param [String] name
   def initialize
-    init(caller_locations)
+    setup(caller_locations)
 
     if block_given?
       os = OpenStruct.new
@@ -32,25 +69,20 @@ class Kamaze::DockerImage
       os.to_h.each { |k, v| __send__("#{k}=", v) }
     end
 
+    @name = @name.to_s
     tasks_load! if tasks_load?
   end
 
-  def public_attrs
+  # @return [Hash]
+  def to_h
     attrs = {}
-    instance_variables.each do |ivar|
-      k = ivar.to_s.gsub(/^@/, '').to_sym
-      next unless self.respond_to?(k)
-
-      attrs[k] = instance_variable_get(ivar)
-    end
+    public_attrs.each { |k| attrs[k] = self.public_send(k) }
 
     attrs
   end
 
-  alias to_h public_attrs
-
   def to_s
-    "#{name}:#{version}".gsub(/:$/, '')
+    "#{name}:#{version}"
   end
 
   # @return [Boolean]
@@ -65,7 +97,7 @@ class Kamaze::DockerImage
 
   # @return [Pathname]
   def path
-    Pathname.new(@path).to_s
+    Pathname.new(@path)
   end
 
   def method_missing(method, *args, &block)
@@ -77,7 +109,9 @@ class Kamaze::DockerImage
   end
 
   def respond_to_missing?(method, include_private = false)
-    return true if runner.respond_to?(method, include_private)
+    if runner.actions.include?(method.to_sym)
+      return runner.respond_to?(method, include_private)
+    end
 
     super(method, include_private)
   end
@@ -85,32 +119,14 @@ class Kamaze::DockerImage
   protected
 
   attr_writer :name
-
   attr_writer :path
-
   attr_writer :verbose
-
   attr_writer :version
-
   attr_writer :tasks_ns
-
   attr_writer :tasks_load
-
   attr_writer :run_as
-
   attr_writer :exec_command
-
   attr_writer :commands
-
-  def init(locations)
-    @name = nil
-    @verbose = $stdout.tty? && $stderr.tty?
-    @tasks_load = true
-    @tasks_ns = nil
-    @run_as = called_from(locations).dirname.basename.to_s
-    @exec_command = 'bash'
-    @commands = default_commands
-  end
 
   # Load tasks
   def tasks_load!
@@ -122,23 +138,5 @@ class Kamaze::DockerImage
   # @return [Runner]
   def runner
     Runner.new(self, commands)
-  end
-
-  # @return [Pathname]
-  def called_from(locations = caller_locations)
-    location = locations.first.path
-
-    Pathname.new(location).realpath
-  end
-
-  def default_commands
-    {
-      build: ['build', '%<opt_t>s', '%<name>s:%<version>s', '--rm', '%<path>s'],
-      exec: ['exec', '%<opt_it>s', '%<run_as>s'],
-      run: ['run', '%<opt_it>s', '%<name>s:%<version>s'],
-      start: ['run', '-d', '--name', '%<run_as>s', '%<name>s:%<version>s'],
-      'started?': ['inspect', '-f', '{{.State.Running}}', '%<run_as>s'],
-      stop: ['rm', '-f', '%<run_as>s']
-    }
   end
 end
