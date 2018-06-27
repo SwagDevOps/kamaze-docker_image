@@ -70,6 +70,8 @@ class Kamaze::DockerImage
     end
 
     @name = @name.to_s
+    @commands = Hash[@commands.map { |k, v| [k.to_sym, v] }]
+    to_h.each { |k, v| instance_variable_set("@#{k}", v) }
     tasks_load! if tasks_load?
   end
 
