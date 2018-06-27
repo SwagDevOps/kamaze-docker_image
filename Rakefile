@@ -11,7 +11,9 @@ Kamaze.project do |project|
   project.name    = 'kamaze-docker_image'
   project.tasks   = [
     'cs:correct', 'cs:control', 'cs:pre-commit',
-    'doc', 'doc:watch', 'gem', 'misc:gitignore',
+    'doc', 'doc:watch',
+    'gem', 'gem:install',
+    'misc:gitignore',
     'shell', 'sources:license', 'test', 'version:edit',
   ]
 end.load!
@@ -24,10 +26,11 @@ if project.path('spec').directory?
   end
 end
 
-Kamaze::DockerImage.new do |image|
-  image.name     = 'kamaze/sample_image'
-  image.version  = '0.0.1'
-  image.path     = "#{Dir.pwd}/image"
-  image.run_as   = image.name.tr('/', '_')
-  image.tasks_ns = 'docker'
+Kamaze::DockerImage.new do |config|
+  config.name     = 'kamaze/sample_image'
+  config.version  = '0.0.1'
+
+  config.path     = "#{Dir.pwd}/image"
+  config.run_as   = config.name.tr('/', '_')
+  config.tasks_ns = 'docker'
 end
