@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.licenses    = ["GPL-3.0"]
   s.authors     = ["Dimitri Arrigoni"]
   s.email       = "dimitri@arrigoni.me"
-  s.homepage    = "https://github.com/SwagDevOps/ylem"
+  s.homepage    = "https://github.com/SwagDevOps/kamaze-docker_image"
 
   # MUST follow the higher required_ruby_version
   # requires version >= 2.3.0 due to safe navigation operator &
