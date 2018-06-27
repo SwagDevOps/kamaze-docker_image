@@ -100,6 +100,7 @@ class Kamaze::DockerImage
     Pathname.new(@path)
   end
 
+  # @see Kamaze::DockerImage::Runner#actions
   def method_missing(method, *args, &block)
     if respond_to_missing?(method)
       return runner.public_send(method, *args, &block)
@@ -137,6 +138,6 @@ class Kamaze::DockerImage
 
   # @return [Runner]
   def runner
-    Runner.new(self, commands)
+    Runner.new(self)
   end
 end

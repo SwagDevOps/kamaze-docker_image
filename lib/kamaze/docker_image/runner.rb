@@ -9,8 +9,8 @@ class Kamaze::DockerImage::Runner
   autoload :Open3, 'open3'
   autoload :Shellwords, 'shellwords'
 
-  # @return [Kamaze::DockerImage]
-  attr_reader :image
+  # @return [Hash]
+  attr_reader :config
 
   # Get commands
   #
@@ -21,9 +21,9 @@ class Kamaze::DockerImage::Runner
   # @param [Hash] commands
   #
   # @see Kamaze::DockerImage::Concern::Setup#default_commands
-  def initialize(image, commands = {})
-    @image = image.clone.freeze
-    @commands = commands.merge(default_commands)
+  def initialize(image)
+    @config = image.to_h
+    @commands = image.commands.merge(default_commands)
   end
 
   # @return [Hash]
@@ -98,7 +98,7 @@ class Kamaze::DockerImage::Runner
 
     [executable]
       .push(*commands.fetch(keyword.to_sym))
-      .map { |w| w % image.to_h.merge(h) }
+      .map { |w| w % config.merge(h) }
       .map { |w| w.to_s.empty? ? nil : w }
       .compact
   end
@@ -111,7 +111,7 @@ class Kamaze::DockerImage::Runner
   # @see https://github.com/ruby/rake/blob/124a03bf4c0db41cd80a41394a9e7c6426e44784/lib/rake/file_utils.rb#L43
   def sh(*cmd, &block)
     options = cmd.last.is_a?(Hash) ? cmd.pop : {}
-    options[:verbose] = image.verbose? unless options.key?(:verbose)
+    options[:verbose] = config[:verbose] unless options.key?(:verbose)
 
     Class.new do
       require 'rake/file_utils'
