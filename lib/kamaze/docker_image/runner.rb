@@ -12,18 +12,28 @@ class Kamaze::DockerImage::Runner
   # @return [Kamaze::DockerImage]
   attr_reader :image
 
+  # Get commands
+  #
   # @return [Hash]
   attr_reader :commands
 
   # @param [Kamaze::DockerImage] image
   # @param [Hash] commands
-  def initialize(image, commands)
-    inspect_started = ['inspect', '-f', '{{.State.Running}}', '%<run_as>s']
-
-    @image = image
-    @commands = commands.merge('started?': inspect_started)
+  #
+  # @see Kamaze::DockerImage::Concern::Setup#default_commands
+  def initialize(image, commands = {})
+    @image = image.clone.freeze
+    @commands = commands.merge(default_commands)
   end
 
+  # @return [Hash]
+  def default_commands
+    {
+      'started?': ['inspect', '-f', '{{.State.Running}}', '%<run_as>s']
+    }
+  end
+
+  # @return [Boolean]
   def tty?
     $stdout.tty? and $stderr.tty?
   end
@@ -33,7 +43,7 @@ class Kamaze::DockerImage::Runner
   end
 
   def run(command = nil, &block)
-    cmd = image.command(:run).push(command).compact
+    cmd = self.command(:run).push(command).compact
 
     sh(*cmd, &block)
   end
@@ -58,9 +68,16 @@ class Kamaze::DockerImage::Runner
     start(&block)
   end
 
+  # @return [Array<Symbol>]
+  def actions
+    %i[restart start stop exec run build].sort
+  end
+
+  # Denote container is already running/started
+  #
+  # @return [Boolean]
   def started?
-    cmd = image.command(:started?)
-    res = Open3.capture3(*cmd)[0]
+    res = Open3.capture3(*self.command(:started?))[0]
 
     # res SHOULD be (true|false)
     # but, it can also be an empty string
