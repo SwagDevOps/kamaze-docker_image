@@ -28,27 +28,8 @@ class Kamaze::DockerImage::Runner
     $stdout.tty? and $stderr.tty?
   end
 
-  # Get command for given keyword
-  #
-  # @param [String|Symbol] keyword
-  # @return [Array]
-  def command(keyword)
-    h = {
-      opt_t: tty? ? '-t' : nil,
-      opt_it: tty? ? '-it' : nil,
-    }
-
-    [executable]
-      .push(*commands.fetch(keyword.to_sym))
-      .map { |w| w % image.to_h.merge(h) }
-      .map { |w| w.to_s.empty? ? nil : w }
-      .compact
-  end
-
   def build(&block)
-    cmd = image.command(:build)
-
-    sh(*cmd, &block)
+    sh(*self.command(:build), &block)
   end
 
   def run(command = nil, &block)
@@ -59,21 +40,17 @@ class Kamaze::DockerImage::Runner
 
   def exec(command = nil, &block)
     command = Shellwords.split(command || image.exec_command)
-    cmd = image.command(:exec).push(*command)
+    cmd = self.command(:exec).push(*command)
 
     sh(*cmd, &block)
   end
 
   def start(&block)
-    cmd = image.command(:start)
-
-    sh(*cmd, &block) unless started?
+    sh(*self.command(:start), &block) unless started?
   end
 
   def stop(&block)
-    cmd = image.command(:stop)
-
-    sh(*cmd, &block) if started?
+    sh(*self.command(:stop), &block) if started?
   end
 
   def restart(&block)
@@ -91,6 +68,23 @@ class Kamaze::DockerImage::Runner
   end
 
   protected
+
+  # Get command for given keyword
+  #
+  # @param [String|Symbol] keyword
+  # @return [Array]
+  def command(keyword)
+    h = {
+      opt_t: tty? ? '-t' : nil,
+      opt_it: tty? ? '-it' : nil,
+    }
+
+    [executable]
+      .push(*commands.fetch(keyword.to_sym))
+      .map { |w| w % image.to_h.merge(h) }
+      .map { |w| w.to_s.empty? ? nil : w }
+      .compact
+  end
 
   # @return [String]
   def executable
