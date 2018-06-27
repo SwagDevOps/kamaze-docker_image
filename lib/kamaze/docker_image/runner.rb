@@ -2,12 +2,16 @@
 
 require_relative '../docker_image'
 
-# Runner
+# Runner provide methods to execute image related actions
+#
+# @see #actions
+# @see Kamaze::DockerImage::Concern::Setup#default_commands
 class Kamaze::DockerImage::Runner
-  autoload :Cliver, 'cliver'
   autoload :YAML, 'yaml'
   autoload :Open3, 'open3'
   autoload :Shellwords, 'shellwords'
+
+  require_relative 'runner/storage'
 
   # @return [Hash]
   attr_reader :config
@@ -18,12 +22,18 @@ class Kamaze::DockerImage::Runner
   attr_reader :commands
 
   # @param [Kamaze::DockerImage] image
-  # @param [Hash] commands
   #
   # @see Kamaze::DockerImage::Concern::Setup#default_commands
   def initialize(image)
-    @config = image.to_h
-    @commands = image.commands.merge(default_commands)
+    @config = image.to_h.freeze
+
+    image.commands.merge(default_commands).tap do |commands|
+      @commands = Storage[commands].tap do |store|
+        store.config = @config
+      end
+    end
+
+    @commands.freeze
   end
 
   # @return [Hash]
@@ -33,34 +43,29 @@ class Kamaze::DockerImage::Runner
     }
   end
 
-  # @return [Boolean]
-  def tty?
-    $stdout.tty? and $stderr.tty?
-  end
-
   def build(&block)
-    sh(*self.command(:build), &block)
+    sh(*commands.fetch(:build), &block)
   end
 
   def run(command = nil, &block)
-    cmd = self.command(:run).push(command).compact
+    cmd = commands.fetch(:run).push(command).compact
 
     sh(*cmd, &block)
   end
 
   def exec(command = nil, &block)
     command = Shellwords.split(command || image.exec_command)
-    cmd = self.command(:exec).push(*command)
+    cmd = commands.fetch(:exec).push(*command)
 
     sh(*cmd, &block)
   end
 
   def start(&block)
-    sh(*self.command(:start), &block) unless started?
+    sh(*commands.fetch(:start), &block) unless started?
   end
 
   def stop(&block)
-    sh(*self.command(:stop), &block) if started?
+    sh(*commands.fetch(:stop), &block) if started?
   end
 
   def restart(&block)
@@ -77,7 +82,7 @@ class Kamaze::DockerImage::Runner
   #
   # @return [Boolean]
   def started?
-    res = Open3.capture3(*self.command(:started?))[0]
+    res = Open3.capture3(*commands.fetch(:started?))[0]
 
     # res SHOULD be (true|false)
     # but, it can also be an empty string
@@ -85,28 +90,6 @@ class Kamaze::DockerImage::Runner
   end
 
   protected
-
-  # Get command for given keyword
-  #
-  # @param [String|Symbol] keyword
-  # @return [Array]
-  def command(keyword)
-    h = {
-      opt_t: tty? ? '-t' : nil,
-      opt_it: tty? ? '-it' : nil,
-    }
-
-    [executable]
-      .push(*commands.fetch(keyword.to_sym))
-      .map { |w| w % config.merge(h) }
-      .map { |w| w.to_s.empty? ? nil : w }
-      .compact
-  end
-
-  # @return [String]
-  def executable
-    Cliver.detect!('docker')
-  end
 
   # @see https://github.com/ruby/rake/blob/124a03bf4c0db41cd80a41394a9e7c6426e44784/lib/rake/file_utils.rb#L43
   def sh(*cmd, &block)
