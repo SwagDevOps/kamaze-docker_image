@@ -5,18 +5,23 @@ namer = lambda do |name|
 end
 
 desc 'Build image'
-task namer.call(:build) do
+task namer.call(:build) do |task|
   image.build
+  task.reenable
 end
 
 desc 'Run a command in a running container'
-task namer.call(:exec), [:command] do |_task, args|
+task namer.call(:exec), [:command] do |task, args|
+  Rake::Task[namer.call(:start)].invoke
+
   image.exec(args[:command])
+  task.reenable
 end
 
 desc 'Run a command in a new container'
-task namer.call(:run), [:command] do |_task, args|
+task namer.call(:run), [:command] do |task, args|
   image.run(args[:command])
+  task.reenable
 end
 
 desc 'Start container as %<run_as>s' % { run_as: image.run_as }
