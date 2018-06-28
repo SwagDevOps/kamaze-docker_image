@@ -31,7 +31,9 @@ class Kamaze::DockerImage::Runner
   #
   # @see Kamaze::DockerImage::Concern::Setup#default_commands
   def initialize(image)
-    @config = image.to_h.freeze
+    @config = image.to_h.merge(
+      image: image.to_s
+    ).freeze
 
     image.commands.merge(default_commands).tap do |commands|
       @commands = Storage[commands].tap do |store|
