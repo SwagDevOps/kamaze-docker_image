@@ -39,7 +39,7 @@ module Kamaze::DockerImage::Concern::Setup
     @tasks_load = true
     @tasks_ns = nil
     @run_as = called_from(locations).dirname.basename.to_s
-    @executable = 'docker'
+    @docker_bin = 'docker'
     @exec_command = 'bash'
     @commands = default_commands
   end
@@ -47,7 +47,14 @@ module Kamaze::DockerImage::Concern::Setup
   def setup_block(&_block)
     os = OpenStruct.new
     yield(os)
-    os.to_h.each { |k, v| __send__("#{k}=", v) }
+
+    os.to_h.each do |k, v|
+      begin
+        __send__("#{k}=", v)
+      rescue NoMethodError
+        next
+      end
+    end
   end
 
   # @return [Pathname]
