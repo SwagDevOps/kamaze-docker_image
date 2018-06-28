@@ -10,41 +10,74 @@ require 'rake/dsl_definition'
 
 self.extend(Rake::DSL)
 
+# Make task name using namespace (from image)
+#
+# @return [String]
 namer = lambda do |name|
   "#{image.tasks_ns}:#{name}".gsub(/^:/, '')
 end
 
+# Execute related ``pre_`` and ``post_`` tasks
+#
+# Sample of use:
+#
+# ```ruby
+# task 'docker:pre_start' do |task, args|
+#   pp(task, args)
+# end
+#
+# task 'docker:post_start' do |task, args|
+#   pp(task, args)
+# end
+# ```
+wrapper = lambda do |task, args = nil, &block|
+  tasks = lambda do |name|
+    Rake::Task[name].execute(**args.to_h) if Rake::Task.task_defined?(name)
+  end
+
+  cname = task.name.gsub(/^#{image.tasks_ns}:/, '')
+  names = {
+    pre: namer.call("pre_#{cname}"),
+    post: namer.call("post_#{cname}"),
+  }
+
+  names.fetch(:pre).tap { |name| tasks.call(name) }
+  block.call
+  task.reenable
+  names.fetch(:post).tap { |name| tasks.call(name) }
+end
+
+# tasks --------------------------------------------------------------
+
 desc 'Build image'
 task namer.call(:build) do |task|
-  image.build
-  task.reenable
+  wrapper.call(task) { image.build }
 end
 
 desc 'Run a command in a running container'
 task namer.call(:exec), [:command] do |task, args|
-  Rake::Task[namer.call(:start)].invoke
-
-  image.exec(args[:command])
-  task.reenable
+  wrapper.call(task, args) do
+    Rake::Task[namer.call(:start)].execute
+    image.exec(args[:command])
+  end
 end
 
 desc 'Run a command in a new container'
 task namer.call(:run), [:command] do |task, args|
-  image.run(args[:command])
-  task.reenable
+  wrapper.call(task, args) { image.run(args[:command]) }
 end
 
 desc 'Start container as %<run_as>s' % { run_as: image.run_as }
-task namer.call(:start) do
-  image.start
+task namer.call(:start) do |task|
+  wrapper.call(task) { image.start }
 end
 
 desc 'Stop container'
-task namer.call(:stop) do
-  image.stop
+task namer.call(:stop) do |task|
+  wrapper.call(task) { image.stop }
 end
 
 desc 'Restart container'
-task namer.call(:restart) do
-  image.restart
+task namer.call(:restart) do |task|
+  wrapper.call(task) { image.restart }
 end
