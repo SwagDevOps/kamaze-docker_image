@@ -30,7 +30,7 @@ Kamaze::DockerImage.new do |config|
   config.name     = 'kamaze/sample_image'
   config.version  = '0.0.1'
 
-  config.path     = "#{Dir.pwd}/image"
+  config.path     = 'image'
   config.run_as   = config.name.tr('/', '_')
   config.tasks_ns = 'docker'
 end
