@@ -25,7 +25,7 @@ module Kamaze::DockerImage::Concern::ReadableAttrs
       methods = ([k, "#{k}?".to_sym] & public_methods)
 
       methods.empty? ? nil : k
-    end.compact
+    end.compact.sort
   end
 
   # @return [Hash]
