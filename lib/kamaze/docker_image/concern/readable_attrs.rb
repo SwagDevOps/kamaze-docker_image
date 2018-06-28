@@ -32,7 +32,8 @@ module Kamaze::DockerImage::Concern::ReadableAttrs
   def to_h
     attrs = {}
     readable_attrs.each do |k|
-      ([k, "#{k}?".to_sym] & public_methods).each do |m|
+      # "real" accessor will override boolean accessor
+      (["#{k}?".to_sym, k] & public_methods).each do |m|
         attrs[k] = self.public_send(m)
       end
     end
