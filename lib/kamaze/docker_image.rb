@@ -45,6 +45,11 @@ class Kamaze::DockerImage
   # @return [String]
   attr_reader :run_as
 
+  # Executable path or name for ``docker``
+  #
+  # @return [String]
+  attr_reader :docker_bin
+
   # Get default command for ``exec``
   #
   # @see Runner#exec
@@ -150,6 +155,10 @@ class Kamaze::DockerImage
   # @see Concern::Setup#setup_defaults
   # @type [Hash]
   attr_writer :commands
+
+  # @see Concern::Setup#setup_defaults
+  # @type [String|Symbol]
+  attr_writer :docker_bin
 
   # @return [Runner]
   attr_reader :runner
