@@ -37,3 +37,17 @@ describe Kamaze::DockerImage, :docker_image do
     end
   end
 end
+
+describe Kamaze::DockerImage, :docker_image do
+  context '#commands' do
+    it { expect(subject.commands).to be_a(Hash) }
+  end
+
+  context '#commands.keys.sort' do
+    it do
+      [:build, :exec, :run, :start, :stop]
+        .sort
+        .tap { |keys| expect(subject.commands.keys.sort).to eq(keys) }
+    end
+  end
+end
