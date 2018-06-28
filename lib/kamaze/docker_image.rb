@@ -47,7 +47,7 @@ class Kamaze::DockerImage
 
   # Get default command for ``exec``
   #
-  # @see Kamaze::DockerImage::Runner#exec
+  # @see Runner#exec
   #
   # @return [String]
   attr_reader :exec_command
@@ -65,7 +65,6 @@ class Kamaze::DockerImage
   include Concern::Setup
   include Concern::ReadableAttrs
 
-  # @param [String] name
   def initialize(&block)
     setup(caller_locations, &block)
 
@@ -118,14 +117,38 @@ class Kamaze::DockerImage
 
   protected
 
+  # @type [String]
   attr_writer :name
+
+  # @see Concern::Setup#setup_defaults
+  # @type [String]
   attr_writer :path
+
+  # @see Concern::Setup#setup_defaults
+  # @type [Boolean]
   attr_writer :verbose
+
+  # @see Concern::Setup#setup_defaults
+  # @type [String]
   attr_writer :version
+
+  # @type [String|nil]
   attr_writer :tasks_ns
+
+  # @see Concern::Setup#setup_defaults
+  # @type [String]
   attr_writer :tasks_load
+
+  # @see Concern::Setup#setup_defaults
+  # @type [String]
   attr_writer :run_as
+
+  # @see Concern::Setup#setup_defaults
+  # @type [String]
   attr_writer :exec_command
+
+  # @see Concern::Setup#setup_defaults
+  # @type [Hash]
   attr_writer :commands
 
   # @return [Runner]
