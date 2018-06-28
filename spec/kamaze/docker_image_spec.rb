@@ -41,6 +41,7 @@ describe Kamaze::DockerImage, :docker_image do
   context '#to_h.keys' do
     it do
       [:commands,
+       :docker_bin,
        :exec_command,
        :name,
        :path,
