@@ -49,9 +49,12 @@ class Kamaze::DockerImage::Runner::Storage < Hash
 
   protected
 
+  # Get executable
+  #
+  # @raise [Cliver::Dependency::NotFound]
   # @return [String]
   def executable
-    Cliver.detect!('docker')
+    Cliver.detect!(config[:docker_bin] || :docker).freeze
   end
 
   # Format given command
