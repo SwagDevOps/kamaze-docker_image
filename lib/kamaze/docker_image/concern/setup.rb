@@ -7,11 +7,11 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../concern'
-require 'pathname'
 
 # Provides setup (used during initialization) and related methods.
 module Kamaze::DockerImage::Concern::Setup
   autoload :OpenStruct, 'ostruct'
+  autoload :Pathname, 'pathname'
 
   protected
 
@@ -34,6 +34,7 @@ module Kamaze::DockerImage::Concern::Setup
     @name = nil
     @version = 'latest'
 
+    @path = Pathname.new('.')
     @verbose = $stdout.tty? && $stderr.tty?
     @tasks_load = true
     @tasks_ns = nil
