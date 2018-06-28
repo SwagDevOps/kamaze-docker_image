@@ -1,23 +1,32 @@
 # frozen_string_literal: true
 
 require_relative '../docker_image'
-#require 'rake/dsl_definition'
 
-# Loader for tasks
+# Loader for tasks (using eval binding)
 class Kamaze::DockerImage::Loader
+  # Provide access to image (within tasks)
+  #
+  # @return Kamaze::DockerImage
   attr_reader :image
 
-  # @param [Image] image
+  # @param [Kamaze::DockerImage] image
   def initialize(image)
-    @image = image
+    @image = image.clone.freeze
   end
 
   # @return [self]
   def call
-    self.extend(Rake::DSL)
-
-    eval(IO.read("#{__dir__}/tasks.rb"), binding)
+    # rubocop:disable Security/Eval
+    eval(content, binding)
+    # rubocop:enable Security/Eval
 
     self
+  end
+
+  protected
+
+  # @return [String]
+  def content
+    IO.read("#{__dir__}/tasks.rb")
   end
 end

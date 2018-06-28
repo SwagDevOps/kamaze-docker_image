@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require 'rake/dsl_definition'
+
+self.extend(Rake::DSL)
+
 namer = lambda do |name|
   "#{image.tasks_ns}:#{name}".gsub(/^:/, '')
 end
