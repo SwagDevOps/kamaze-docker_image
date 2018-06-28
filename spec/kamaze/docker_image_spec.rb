@@ -29,6 +29,7 @@ describe Kamaze::DockerImage, :docker_image do
       [:commands,
        :exec_command,
        :name,
+       :path,
        :run_as,
        :tasks_load,
        :tasks_ns,
