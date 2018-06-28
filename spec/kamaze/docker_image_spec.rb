@@ -20,6 +20,20 @@ describe Kamaze::DockerImage, :docker_image do
 end
 
 describe Kamaze::DockerImage, :docker_image do
+  it do
+    # magic methods
+    expect(subject).to respond_to(:build).with(0).arguments
+    expect(subject).to respond_to(:run).with(0).arguments
+    expect(subject).to respond_to(:run).with(1).arguments
+    expect(subject).to respond_to(:exec).with(0).arguments
+    expect(subject).to respond_to(:exec).with(1).arguments
+    expect(subject).to respond_to(:start).with(0).arguments
+    expect(subject).to respond_to(:stop).with(0).arguments
+    expect(subject).to respond_to(:restart).with(0).arguments
+  end
+end
+
+describe Kamaze::DockerImage, :docker_image do
   context '#to_h' do
     it { expect(subject.to_h).to be_a(Hash) }
   end
