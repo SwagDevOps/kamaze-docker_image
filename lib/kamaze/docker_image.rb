@@ -53,7 +53,6 @@ class Kamaze::DockerImage
   attr_reader :exec_command
 
   autoload :Pathname, 'pathname'
-  autoload :OpenStruct, 'ostruct'
 
   autoload :Runner, "#{__dir__}/docker_image/runner"
   autoload :Loader, "#{__dir__}/docker_image/loader"
@@ -67,18 +66,8 @@ class Kamaze::DockerImage
   include Concern::ReadableAttrs
 
   # @param [String] name
-  def initialize
-    setup(caller_locations)
-
-    if block_given?
-      os = OpenStruct.new
-      yield(os)
-      os.to_h.each { |k, v| __send__("#{k}=", v) }
-    end
-
-    @name = @name.to_s
-    @commands = Hash[@commands.map { |k, v| [k.to_sym, v] }]
-    to_h.each { |k, v| instance_variable_set("@#{k}", v) }
+  def initialize(&block)
+    setup(caller_locations, &block)
 
     @runner = Runner.new(self)
     tasks_load! if tasks_load?
