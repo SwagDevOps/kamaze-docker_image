@@ -12,6 +12,7 @@ require_relative '../concern'
 module Kamaze::DockerImage::Concern::Setup
   autoload :OpenStruct, 'ostruct'
   autoload :Pathname, 'pathname'
+  autoload :YAML, 'yaml'
 
   protected
 
@@ -44,17 +45,36 @@ module Kamaze::DockerImage::Concern::Setup
     @commands = default_commands
   end
 
+  # @yield [OpenStruct] Config used to setup instance
+  # @return [OpenStruct]
   def setup_block(&_block)
-    os = OpenStruct.new
-    yield(os)
+    OpenStruct.new(self.respond_to?(:to_h) ? to_h : {}).tap do |s|
+      yield(s)
 
-    os.to_h.each do |k, v|
-      begin
-        __send__("#{k}=", v)
-      rescue NoMethodError
-        next
-      end
+      s.freeze
+      s.to_h.each { |k, v| setup_attr(k, v) }
     end
+  end
+
+  # Get default commands
+  #
+  # @return [Hash]
+  def default_commands
+    content = Pathname.new(__dir__).join('..', 'commands.yml').read
+
+    YAML.safe_load(content, [Symbol])
+  end
+
+  private
+
+  # Set given attr with given value
+  #
+  # @param [String|Symbol] attr
+  # @param [Object] val
+  def setup_attr(attr, val)
+    __send__("#{attr}=", val)
+  rescue NoMethodError
+    nil
   end
 
   # @return [Pathname]
@@ -62,16 +82,5 @@ module Kamaze::DockerImage::Concern::Setup
     location = locations.first.path
 
     Pathname.new(location).realpath
-  end
-
-  # @return [Hash]
-  def default_commands
-    {
-      build: ['build', '--tag', '%<image>s', '--rm', '%<path>s'],
-      exec: ['exec', '%<opt_it>s', '%<run_as>s'],
-      run: ['run', '%<opt_it>s', '%<image>s'],
-      start: ['run', '-d', '--name', '%<run_as>s', '%<image>s'],
-      stop: ['rm', '-f', '%<run_as>s']
-    }
   end
 end
