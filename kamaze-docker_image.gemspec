@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
     ".yardopts",
     "lib/kamaze-docker_image.rb",
     "lib/kamaze/docker_image.rb",
+    "lib/kamaze/docker_image/commands.yml",
     "lib/kamaze/docker_image/concern.rb",
     "lib/kamaze/docker_image/concern/readable_attrs.rb",
     "lib/kamaze/docker_image/concern/setup.rb",

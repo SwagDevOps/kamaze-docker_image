@@ -5,7 +5,7 @@
 @files = [
     '.yardopts',
     'lib/**/*.rb',
-    'lib/**/version.yml'
+    'lib/**/*.yml'
 ].map { |m| Dir.glob(m) }.flatten.keep_if { |f| File.file?(f) }.sort
 
 self.singleton_class.define_method(:_q) { |input| input.to_s.inspect }
