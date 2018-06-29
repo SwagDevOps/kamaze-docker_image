@@ -1,6 +1,6 @@
 ---
-build: ['build', '--tag', '%<image>s', '--rm', '%<path>s']
-exec: ['exec', '%<opt_it>s', '%<run_as>s']
-run: ['run', '%<opt_it>s', '%<image>s']
-start: ['run', '-d', '--name', '%<run_as>s', '%<image>s']
-stop: ['rm', '-f', '%<run_as>s']
+:build: ['build', '--tag', '%<image>s', '--rm', '%<path>s']
+:exec: ['exec', '%<opt_it>s', '%<run_as>s']
+:run: ['run', '%<opt_it>s', '%<image>s']
+:start: ['run', '-d', '--name', '%<run_as>s', '%<image>s']
+:stop: ['rm', '-f', '%<run_as>s']
