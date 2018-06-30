@@ -13,6 +13,7 @@ module Kamaze::DockerImage::Concern::Setup
   autoload :OpenStruct, 'ostruct'
   autoload :Pathname, 'pathname'
   autoload :YAML, 'yaml'
+  autoload :Config, "#{__dir__}/setup/config"
 
   protected
 
@@ -55,10 +56,10 @@ module Kamaze::DockerImage::Concern::Setup
 
   # rubocop:enable Metrics/MethodLength
 
-  # @yield [OpenStruct] config used to setup instance
-  # @return [OpenStruct]
+  # @yield [Config] config used to setup instance
+  # @return [Config]
   def setup_block
-    OpenStruct.new(self.respond_to?(:to_h) ? to_h : {}).tap do |s|
+    Config.new(self.respond_to?(:to_h) ? to_h : {}).tap do |s|
       yield(s) if block_given?
 
       s.freeze
