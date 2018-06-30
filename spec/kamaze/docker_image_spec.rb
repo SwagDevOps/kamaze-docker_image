@@ -68,3 +68,18 @@ describe Kamaze::DockerImage, :docker_image do
     end
   end
 end
+
+# Using an image without version (default is ``latest``)
+describe Kamaze::DockerImage, :docker_image do
+  let(:subject) { sham!(:docker_image).images.fetch(:base) }
+
+  context '#version' do
+    it { expect(subject.version).to eq('latest') }
+  end
+
+  [:to_s, :tag].each do |method|
+    context "##{method}" do
+      it { expect(subject.public_send(method)).to eq('sample/base:latest') }
+    end
+  end
+end
