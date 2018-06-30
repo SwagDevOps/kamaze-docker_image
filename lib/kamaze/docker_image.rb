@@ -97,6 +97,13 @@ class Kamaze::DockerImage
 
   alias running? started?
 
+  # @return [Hash]
+  def to_h
+    readable_attrs_values
+      .to_h.tap { |h| h.merge!(tag: tag) }
+      .sort.to_h
+  end
+
   # @return [Boolean]
   def verbose?
     !!@verbose

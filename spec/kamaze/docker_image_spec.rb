@@ -47,6 +47,7 @@ describe Kamaze::DockerImage, :docker_image do
        :name,
        :path,
        :run_as,
+       :tag,
        :tasks_load,
        :tasks_ns,
        :verbose,
