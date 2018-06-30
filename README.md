@@ -29,7 +29,7 @@ Kamaze::DockerImage.new do |config|
   config.name    = 'awseome_image'
   config.version = '4.2.2'
 
-  config.path    = "#{Dir.pwd}/image"
+  config.path    = 'image'
   config.verbose = false
 end
 
