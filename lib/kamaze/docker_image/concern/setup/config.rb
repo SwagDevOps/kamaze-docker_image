@@ -7,11 +7,14 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../setup'
-require 'ostruct'
 
-# Generic struct (ala OpenStruct)
+# Config data structure
+#
+# @see https://ruby-doc.org/stdlib-2.0.0/libdoc/ostruct/rdoc/OpenStruct.html
 class Kamaze::DockerImage::Concern::Setup::Config < OpenStruct
-  # rubocop:disable Style/MissingRespondToMissing
+  def respond_to_missing?(method, include_private = false)
+    super
+  end
 
   # Introduces some strictness on ``OpenStruct#method_missing``
   #
@@ -28,5 +31,4 @@ class Kamaze::DockerImage::Concern::Setup::Config < OpenStruct
 
     super
   end
-  # rubocop:enable Style/MissingRespondToMissing
 end
