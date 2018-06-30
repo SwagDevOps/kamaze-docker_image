@@ -28,16 +28,21 @@ module Kamaze::DockerImage::Concern::ReadableAttrs
     end.compact.sort
   end
 
-  # @return [Hash]
   def to_h
-    attrs = {}
-    readable_attrs.each do |k|
-      # "real" accessor will override boolean accessor
-      (["#{k}?".to_sym, k] & public_methods).each do |m|
-        attrs[k] = self.public_send(m)
-      end
-    end
+    readable_attrs_values.to_h
+  end
 
-    attrs
+  protected
+
+  # Get readable attributes with values
+  #
+  # @return [Array<Array>]
+  def readable_attrs_values
+    readable_attrs.map do |k|
+      # booleanaccessor will override "real" accessor
+      ([k, "#{k}?".to_sym] & public_methods)
+        .map { |m| [k, self.public_send(m)] }
+        .first
+    end.compact
   end
 end
