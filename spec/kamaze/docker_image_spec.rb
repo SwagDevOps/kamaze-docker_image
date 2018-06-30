@@ -10,6 +10,7 @@ describe Kamaze::DockerImage, :docker_image do
     expect(subject).to respond_to(:verbose?).with(0).arguments
     expect(subject).to respond_to(:tasks_load?).with(0).arguments
     expect(subject).to respond_to(:path).with(0).arguments
+    expect(subject).to respond_to(:tag).with(0).arguments
     # attr_reader
     expect(subject).to respond_to(:tasks_ns).with(0).arguments
     expect(subject).to respond_to(:run_as).with(0).arguments

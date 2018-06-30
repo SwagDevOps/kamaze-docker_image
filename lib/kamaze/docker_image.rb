@@ -84,11 +84,18 @@ class Kamaze::DockerImage
     runner.started?
   end
 
-  alias running? started?
-
-  def to_s
+  # Get tag
+  #
+  # tag has the following format: ``#{name}:#{version}``
+  #
+  # @return [String]
+  def tag
     "#{name}:#{version}"
   end
+
+  alias to_s tag
+
+  alias running? started?
 
   # @return [Boolean]
   def verbose?
