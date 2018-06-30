@@ -20,17 +20,25 @@ class Kamaze::DockerImage::Loader
     @image = image.clone.freeze
   end
 
-  # @return [self]
+  # @return [Boolean]
   def call
+    begin
+      self.extend(Rake::DSL)
+    rescue StandardError
+      return false
+    end
+
     # rubocop:disable Security/Eval
     eval(content, binding)
     # rubocop:enable Security/Eval
 
-    self
+    true
   end
 
   protected
 
+  # Tasks file content (to eval)
+  #
   # @return [String]
   def content
     IO.read("#{__dir__}/tasks.rb")
