@@ -6,10 +6,6 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-require 'rake/dsl_definition'
-
-self.extend(Rake::DSL)
-
 # Make task name using namespace (from image)
 #
 # @return [String]
