@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
     "lib/kamaze/docker_image/concern/setup.rb",
     "lib/kamaze/docker_image/concern/setup/config.rb",
     "lib/kamaze/docker_image/loader.rb",
+    "lib/kamaze/docker_image/loader/empty.rb",
     "lib/kamaze/docker_image/runner.rb",
     "lib/kamaze/docker_image/runner/storage.rb",
     "lib/kamaze/docker_image/tasks.rb",
