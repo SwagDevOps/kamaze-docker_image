@@ -22,22 +22,33 @@ class Kamaze::DockerImage::Loader
     @image = image.clone.freeze
   end
 
-  # Load tasks
+  # Load tasks.
   #
-  # @return [Boolean]
+  # @return [self]
   def call
-    Empty.binding.tap do |b|
-      if b.local_variable_get(:ready)
+    if loadable?
+      empty_binding.tap do |b|
         b.local_variable_set(:image, image)
-
         b.eval(content)
       end
     end
 
-    true
+    self
+  end
+
+  # @return [Boolean]
+  def loadable?
+    empty_binding.local_variable_get(:ready)
   end
 
   protected
+
+  # Get en empty binding.
+  #
+  # @return [Empty]
+  def empty_binding
+    Empty.binding
+  end
 
   # Tasks file content (to eval)
   #
