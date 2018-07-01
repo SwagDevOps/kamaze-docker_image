@@ -103,6 +103,7 @@ class Kamaze::DockerImage::Runner
     options[:verbose] = config[:verbose] unless options.key?(:verbose)
 
     Class.new do
+      require 'rake'
       require 'rake/file_utils'
 
       include FileUtils
