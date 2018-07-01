@@ -10,6 +10,8 @@ require_relative '../docker_image'
 
 # Loader for tasks (using eval binding)
 class Kamaze::DockerImage::Loader
+  autoload :Empty, "#{__dir__}/loader/empty"
+
   # Provide access to image (within tasks)
   #
   # @return Kamaze::DockerImage
@@ -20,17 +22,14 @@ class Kamaze::DockerImage::Loader
     @image = image.clone.freeze
   end
 
+  # Load tasks
+  #
   # @return [Boolean]
   def call
-    begin
-      self.extend(Rake::DSL)
-    rescue StandardError
-      return false
+    Empty.binding.tap do |b|
+      b.local_variable_set(:image, image)
+      b.eval(content)
     end
-
-    # rubocop:disable Security/Eval
-    eval(content, binding)
-    # rubocop:enable Security/Eval
 
     true
   end
