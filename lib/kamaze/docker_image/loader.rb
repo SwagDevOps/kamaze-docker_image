@@ -27,8 +27,11 @@ class Kamaze::DockerImage::Loader
   # @return [Boolean]
   def call
     Empty.binding.tap do |b|
-      b.local_variable_set(:image, image)
-      b.eval(content)
+      if b.local_variable_get(:ready)
+        b.local_variable_set(:image, image)
+
+        b.eval(content)
+      end
     end
 
     true

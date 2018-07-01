@@ -26,18 +26,34 @@ class Kamaze::DockerImage::Loader::Empty
     def binding
       load_dsl
 
-      super
+      super.tap do |b|
+        b.local_variable_set(:ready, dsl?)
+      end
+    end
+
+    # @return [Rake::DSL|nil]
+    def dsl
+      Object.const_get('Rake::DSL')
+    rescue NameError
+      nil
+    end
+
+    # Denote ``DSL`` is defined.
+    #
+    # @return [Boolean]
+    def dsl?
+      !!dsl
     end
 
     protected
 
     # Apply ``Rake::DSL``
     #
-    # @return [self|false]
+    # @return [self]
     def load_dsl
-      self.extend(Rake::DSL)
-    rescue StandardError
-      return false
+      self.extend(dsl) if dsl
+
+      self
     end
   end
 end
