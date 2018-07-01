@@ -7,6 +7,7 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../setup'
+require 'ostruct'
 
 # Config data structure
 #
