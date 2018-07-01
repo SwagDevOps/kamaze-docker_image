@@ -7,14 +7,13 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../docker_image'
+require 'docker'
 
 # Runner provide methods to execute image related actions
 #
 # @see #actions
 # @see Kamaze::DockerImage::Concern::Setup#default_commands
 class Kamaze::DockerImage::Runner
-  autoload :YAML, 'yaml'
-  autoload :Open3, 'open3'
   autoload :Shellwords, 'shellwords'
 
   require_relative 'runner/storage'
@@ -33,20 +32,11 @@ class Kamaze::DockerImage::Runner
   def initialize(image)
     @config = image.to_h.freeze
 
-    image.commands.merge(default_commands).tap do |commands|
-      @commands = Storage[commands].tap do |store|
-        store.config = @config
-      end
+    @commands = Storage[image.commands].tap do |store|
+      store.config = @config
     end
 
     @commands.freeze
-  end
-
-  # @return [Hash]
-  def default_commands
-    {
-      'started?': ['inspect', '-f', '{{.State.Running}}', '%<run_as>s']
-    }
   end
 
   def build(&block)
@@ -67,7 +57,7 @@ class Kamaze::DockerImage::Runner
   end
 
   def start(&block)
-    sh(*commands.fetch(:start), &block) unless started?
+    sh(*commands.fetch(:start), &block) unless running?
   end
 
   def stop(&block)
@@ -84,18 +74,38 @@ class Kamaze::DockerImage::Runner
     %i[restart start stop exec run build].sort
   end
 
-  # Denote container is already running/started
+  # Denote container is started.
   #
   # @return [Boolean]
   def started?
-    res = Open3.capture3(*commands.fetch(:started?))[0]
+    !fetch_containers.empty?
+  end
 
-    # res SHOULD be (true|false)
-    # but, it can also be an empty string
-    true == YAML.safe_load(res)
+  # Denote container is running.
+  #
+  # @return [Boolean]
+  def running?
+    !fetch_containers(:running).empty?
   end
 
   protected
+
+  # Fetch containers
+  #
+  # @param states [Array|nil] states
+  # @return [Array<Docker::Container>]
+  def fetch_containers(states = nil)
+    unless states.nil?
+      states = (states.is_a?(Array) ? states : [states]).map(&:to_s)
+      states = nil if states.empty?
+    end
+
+    Docker::Container.all(all: true).keep_if do |c|
+      states.to_a.empty? ? true : states.include?(c.info.fetch('State'))
+    end.keep_if do |c|
+      c.info.fetch('Names').include?("/#{config.fetch(:run_as)}")
+    end
+  end
 
   # @see https://github.com/ruby/rake/blob/124a03bf4c0db41cd80a41394a9e7c6426e44784/lib/rake/file_utils.rb#L43
   def sh(*cmd, &block)
