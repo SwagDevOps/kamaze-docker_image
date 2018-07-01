@@ -37,6 +37,7 @@ Gem::Specification.new do |s|
   ]
 
   s.add_runtime_dependency("cliver", ["~> 0.3"])
+  s.add_runtime_dependency("docker-api", ["~> 1.34"])
   s.add_runtime_dependency("kamaze-version", ["~> 1.0"])
 end
 
