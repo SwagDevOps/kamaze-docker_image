@@ -8,7 +8,18 @@
 
 require_relative '../loader'
 
-# Provides empty binding
+# Provides empty binding.
+#
+# Sample of use:
+#
+# ```ruby
+# Empty.binding.tap do |b|
+#   b.local_variable_set(:answer, 42)
+#   b.local_variable_set(:home, '127.0.0.1')
+#
+#   b.eval(content)
+# end
+# ```
 class Kamaze::DockerImage::Loader::Empty
   class << self
     # @return [Binding]
@@ -20,7 +31,7 @@ class Kamaze::DockerImage::Loader::Empty
 
     protected
 
-    # Applies ``Rake::DSL``
+    # Apply ``Rake::DSL``
     #
     # @return [self|false]
     def load_dsl
