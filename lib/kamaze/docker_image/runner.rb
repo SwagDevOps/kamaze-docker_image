@@ -14,9 +14,8 @@ require 'docker'
 # @see #actions
 # @see Kamaze::DockerImage::Concern::Setup#default_commands
 class Kamaze::DockerImage::Runner
-  autoload :Shellwords, 'shellwords'
-
   require_relative 'runner/storage'
+  autoload :Command, "#{__dir__}/runner/command"
 
   # @return [Hash]
   attr_reader :config
@@ -40,28 +39,23 @@ class Kamaze::DockerImage::Runner
   end
 
   def build(&block)
-    sh(*command(:build), &block)
+    command(:build).run(&block)
   end
 
   def run(extra = nil, &block)
-    cmd = command(:run, extra)
-
-    sh(*cmd, &block)
+    command(:run, extra).run(&block)
   end
 
   def exec(extra = nil, &block)
-    default = config.fetch(:exec_command)
-    cmd = command(:exec, extra || default)
-
-    sh(*cmd, &block)
+    command(:exec, extra || default).run(&block)
   end
 
   def start(&block)
-    sh(*command(:start), &block) unless running?
+    command(:start).run(&block) unless running?
   end
 
   def stop(&block)
-    sh(*command(:stop), &block) if started?
+    command(:stop).run(&block) if started?
   end
 
   def restart(&block)
@@ -94,11 +88,11 @@ class Kamaze::DockerImage::Runner
   #
   # @param [String|Symbol] name
   # @param [String|nil] extra
-  # @return [Array<String>]
+  # @return [Command]
   def command(name, extra = nil)
-    commands
-      .fetch(name.to_sym)
-      .push(*Shellwords.split(extra.to_s).compact)
+    command = commands.fetch(name.to_sym)
+
+    Command.new(command, config, extra)
   end
 
   # Fetch containers
@@ -116,18 +110,5 @@ class Kamaze::DockerImage::Runner
     end.keep_if do |c|
       c.info.fetch('Names').include?("/#{config.fetch(:run_as)}")
     end
-  end
-
-  # @see https://github.com/ruby/rake/blob/124a03bf4c0db41cd80a41394a9e7c6426e44784/lib/rake/file_utils.rb#L43
-  def sh(*cmd, &block)
-    options = cmd.last.is_a?(Hash) ? cmd.pop : {}
-    options[:verbose] = config[:verbose] unless options.key?(:verbose)
-
-    Class.new do
-      require 'rake'
-      require 'rake/file_utils'
-
-      include FileUtils
-    end.new.sh(*cmd.map(&:to_s).push(options), &block)
   end
 end
