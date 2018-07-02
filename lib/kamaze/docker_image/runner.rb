@@ -40,29 +40,28 @@ class Kamaze::DockerImage::Runner
   end
 
   def build(&block)
-    sh(*commands.fetch(:build), &block)
+    sh(*command(:build), &block)
   end
 
-  def run(command = nil, &block)
-    cmd = commands.fetch(:run).push(*Shellwords.split(command.to_s)).compact
+  def run(extra = nil, &block)
+    cmd = command(:run, extra)
 
     sh(*cmd, &block)
   end
 
-  def exec(command = nil, &block)
+  def exec(extra = nil, &block)
     default = config.fetch(:exec_command)
-    command ||= default
-    cmd = commands.fetch(:exec).push(*Shellwords.split(command))
+    cmd = command(:exec, extra || default)
 
     sh(*cmd, &block)
   end
 
   def start(&block)
-    sh(*commands.fetch(:start), &block) unless running?
+    sh(*command(:start), &block) unless running?
   end
 
   def stop(&block)
-    sh(*commands.fetch(:stop), &block) if started?
+    sh(*command(:stop), &block) if started?
   end
 
   def restart(&block)
@@ -90,6 +89,17 @@ class Kamaze::DockerImage::Runner
   end
 
   protected
+
+  # Generate command.
+  #
+  # @param [String|Symbol] name
+  # @param [String|nil] extra
+  # @return [Array<String>]
+  def command(name, extra = nil)
+    commands
+      .fetch(name.to_sym)
+      .push(*Shellwords.split(extra.to_s).compact)
+  end
 
   # Fetch containers
   #
