@@ -44,7 +44,7 @@ class Kamaze::DockerImage::Runner
   end
 
   def run(command = nil, &block)
-    cmd = commands.fetch(:run).push(*Shellwords.split(command)).compact
+    cmd = commands.fetch(:run).push(*Shellwords.split(command.to_s)).compact
 
     sh(*cmd, &block)
   end
