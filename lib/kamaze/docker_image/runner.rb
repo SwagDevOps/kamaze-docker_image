@@ -44,14 +44,15 @@ class Kamaze::DockerImage::Runner
   end
 
   def run(command = nil, &block)
-    cmd = commands.fetch(:run).push(command).compact
+    cmd = commands.fetch(:run).push(*Shellwords.split(command)).compact
 
     sh(*cmd, &block)
   end
 
   def exec(command = nil, &block)
-    command = Shellwords.split(command || image.exec_command)
-    cmd = commands.fetch(:exec).push(*command)
+    default = config.fetch(:exec_command)
+    command ||= default
+    cmd = commands.fetch(:exec).push(*Shellwords.split(command))
 
     sh(*cmd, &block)
   end
