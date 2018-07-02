@@ -14,7 +14,7 @@ require 'docker'
 # @see #actions
 # @see Kamaze::DockerImage::Concern::Setup#default_commands
 class Kamaze::DockerImage::Runner
-  require_relative 'runner/storage'
+  autoload :Storage, "#{__dir__}/runner/storage"
   autoload :Command, "#{__dir__}/runner/command"
 
   # @return [Hash]
