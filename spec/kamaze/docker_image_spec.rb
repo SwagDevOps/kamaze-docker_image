@@ -72,7 +72,7 @@ end
 
 # Using an image without version (default is ``latest``)
 describe Kamaze::DockerImage, :docker_image do
-  let(:subject) { sham!(:docker_image).images.fetch(:base) }
+  let(:subject) { sham!(:image).maker.call(:base) }
 
   context '#version' do
     it { expect(subject.version).to eq('latest') }

@@ -10,7 +10,7 @@ describe Kamaze::DockerImage::Loader, :loader do
 end
 
 describe Kamaze::DockerImage::Loader, :loader do
-  let(:subject) { sham!('docker_image/loader').images.fetch(:base) }
+  let(:subject) { sham!(:loader).maker.call(:base) }
 
   # instance methods
   it do
@@ -20,8 +20,8 @@ describe Kamaze::DockerImage::Loader, :loader do
 end
 
 describe Kamaze::DockerImage::Loader, :loader do
-  let(:subject) { sham!('docker_image/loader').images.fetch(:base) }
-  let(:rake_dsl) { sham!('docker_image/loader').rake_dsl }
+  let(:subject) { sham!(:loader).maker.call(:base) }
+  let(:rake_dsl) { sham!(:rake).dsl }
 
   context '#loadable?' do
     it { expect(subject.loadable?).to be(!!rake_dsl) }
@@ -30,7 +30,7 @@ end
 
 # internal stuff (protected methods)
 describe Kamaze::DockerImage::Loader, :loader do
-  let(:subject) { sham!('docker_image/loader').images.fetch(:base) }
+  let(:subject) { sham!(:loader).maker.call(:base) }
 
   context '#empty_binding' do
     it { expect(subject.__send__(:empty_binding)).to be_a(Binding) }
