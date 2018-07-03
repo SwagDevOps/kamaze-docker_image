@@ -17,14 +17,6 @@ class Kamaze::DockerImage::Runner
   autoload :Storage, "#{__dir__}/runner/storage"
   autoload :Command, "#{__dir__}/runner/command"
 
-  # @return [Hash]
-  attr_reader :config
-
-  # Get commands
-  #
-  # @return [Hash]
-  attr_reader :commands
-
   # @param [Kamaze::DockerImage] image
   #
   # @see Kamaze::DockerImage::Concern::Setup#default_commands
@@ -82,6 +74,14 @@ class Kamaze::DockerImage::Runner
   end
 
   protected
+
+  # @return [Hash]
+  attr_reader :config
+
+  # Get commands
+  #
+  # @return [Hash]
+  attr_reader :commands
 
   # Generate command.
   #
