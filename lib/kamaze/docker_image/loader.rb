@@ -10,12 +10,8 @@ require_relative '../docker_image'
 
 # Loader for tasks (using eval binding)
 class Kamaze::DockerImage::Loader
+  autoload :Pathname, 'pathname'
   autoload :Empty, "#{__dir__}/loader/empty"
-
-  # Provide access to image (within tasks)
-  #
-  # @return Kamaze::DockerImage
-  attr_reader :image
 
   # @param [Kamaze::DockerImage] image
   def initialize(image)
@@ -43,6 +39,9 @@ class Kamaze::DockerImage::Loader
 
   protected
 
+  # @return [Kamaze::DockerImage]
+  attr_reader :image
+
   # Get en empty binding.
   #
   # @return [Empty]
@@ -50,10 +49,15 @@ class Kamaze::DockerImage::Loader
     Empty.binding
   end
 
+  # @return [Pathname]
+  def file
+    Pathname.new(__dir__).join('loader', 'tasks.rb')
+  end
+
   # Tasks file content (to eval)
   #
   # @return [String]
   def content
-    IO.read("#{__dir__}/tasks.rb")
+    file.read
   end
 end
