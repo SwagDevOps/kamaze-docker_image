@@ -29,8 +29,7 @@ class Kamaze::DockerImage::Runner
   #
   # @see Kamaze::DockerImage::Concern::Setup#default_commands
   def initialize(image)
-    @config = image.to_h.freeze
-
+    @config = image.to_h.reject! { |k| k == :commands }.freeze
     @commands = Storage[image.commands].tap do |store|
       store.config = @config
     end
