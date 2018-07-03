@@ -20,7 +20,7 @@ require_relative '../loader'
 #   b.eval(content)
 # end
 # ```
-class Kamaze::DockerImage::Loader::Empty
+module Kamaze::DockerImage::Loader::Empty
   class << self
     # @return [Binding]
     def binding
