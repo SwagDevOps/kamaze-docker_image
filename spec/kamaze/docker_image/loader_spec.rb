@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'kamaze/docker_image'
+require 'kamaze/docker_image/loader'
 
 describe Kamaze::DockerImage::Loader, :loader do
   # class methods
@@ -25,5 +25,22 @@ describe Kamaze::DockerImage::Loader, :loader do
 
   context '#loadable?' do
     it { expect(subject.loadable?).to be(!!rake_dsl) }
+  end
+end
+
+# internal stuff (protected methods)
+describe Kamaze::DockerImage::Loader, :loader do
+  let(:subject) { sham!('docker_image/loader').images.fetch(:base) }
+
+  context '#empty_binding' do
+    it { expect(subject.__send__(:empty_binding)).to be_a(Binding) }
+  end
+
+  context '#file' do
+    it { expect(subject.__send__(:file)).to be_a(Pathname) }
+  end
+
+  context '#content' do
+    it { expect(subject.__send__(:content)).to be_a(String) }
   end
 end
