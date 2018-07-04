@@ -49,7 +49,7 @@ module Kamaze::DockerImage::Concern::Setup
       @tasks_ns = nil
       @run_as = called_from(locations).dirname.basename.to_s
       @docker_bin = 'docker'
-      @exec_command = 'bash'
+      @exec_command = 'bash -il'
       @commands = default_commands
     end
   end
