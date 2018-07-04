@@ -38,7 +38,10 @@ class Kamaze::DockerImage::Runner
   end
 
   def exec(extra = nil, &block)
-    command(:exec, extra || default).run(&block)
+    default = config.fetch(:exec_command)
+    extra ||= default
+
+    command(:exec, extra).run(&block)
   end
 
   def start(&block)
