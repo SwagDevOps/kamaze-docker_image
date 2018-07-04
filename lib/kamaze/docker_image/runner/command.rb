@@ -50,16 +50,23 @@ class Kamaze::DockerImage::Runner::Command
   # @return [Array<String>]
   attr_reader :parts
 
+  # Get utils.
+  #
+  # return [Class]
+  def utils
+    if Gem::Specification.find_all_by_name('rake')
+      require 'rake'
+      require 'rake/file_utils'
+    end
+
+    Class.new { include FileUtils }.new
+  end
+
   # @see https://github.com/ruby/rake/blob/124a03bf4c0db41cd80a41394a9e7c6426e44784/lib/rake/file_utils.rb#L43
   def sh(*cmd, &block)
     options = cmd.last.is_a?(Hash) ? cmd.pop : {}
     options[:verbose] = config[:verbose] unless options.key?(:verbose)
 
-    Class.new do
-      require 'rake'
-      require 'rake/file_utils'
-
-      include FileUtils
-    end.new.sh(*cmd.map(&:to_s).push(options), &block)
+    utils.sh(*cmd.map(&:to_s).push(options), &block)
   end
 end
