@@ -20,22 +20,9 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.files = [
     ".yardopts",
-    "lib/kamaze-docker_image.rb",
-    "lib/kamaze/docker_image.rb",
-    "lib/kamaze/docker_image/commands.yml",
-    "lib/kamaze/docker_image/concern.rb",
-    "lib/kamaze/docker_image/concern/readable_attrs.rb",
-    "lib/kamaze/docker_image/concern/setup.rb",
-    "lib/kamaze/docker_image/concern/setup/config.rb",
-    "lib/kamaze/docker_image/loader.rb",
-    "lib/kamaze/docker_image/loader/empty.rb",
-    "lib/kamaze/docker_image/loader/tasks.rb",
-    "lib/kamaze/docker_image/runner.rb",
-    "lib/kamaze/docker_image/runner/command.rb",
-    "lib/kamaze/docker_image/runner/storage.rb",
-    "lib/kamaze/docker_image/version.rb",
-    "lib/kamaze/docker_image/version.yml",
-  ]
+    "lib/**/*.rb",
+    "lib/**/*.yml",
+  ].map { |m| Dir.glob(m) }.flatten.sort
 
   s.add_runtime_dependency("cliver", ["~> 0.3"])
   s.add_runtime_dependency("docker-api", ["~> 1.34"])
