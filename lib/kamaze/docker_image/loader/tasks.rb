@@ -77,3 +77,10 @@ desc 'Restart container'
 task namer.call(:restart) do |task|
   wrapper.call(task) { image.restart }
 end
+
+if image.ssh.enabled?
+  desc 'Connect to container Using Secure Shell (SSH)'
+  task namer.call(:ssh) do |task|
+    wrapper.call(task) { image.ssh.call }
+  end
+end
