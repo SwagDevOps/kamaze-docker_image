@@ -1,0 +1,6 @@
+---
+:enabled: true
+:executable: ssh
+:port: 22
+:user: root
+:command: ['%<executable>s', '-p', '%<port>s', '%<user>s@%<host>s']
