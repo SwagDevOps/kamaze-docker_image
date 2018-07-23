@@ -44,7 +44,7 @@ class Kamaze::DockerImage::Runner::Storage < Hash
     key = key.to_sym
     val = super
 
-    key?(key) ? shape(val) : val
+    val ? shape(val) : val
   end
 
   protected
@@ -70,9 +70,9 @@ class Kamaze::DockerImage::Runner::Storage < Hash
 
     [executable]
       .push(*command)
+      .map(&:to_s)
       .map { |w| w % config.merge(h) }
       .map { |w| w.to_s.empty? ? nil : w }
       .compact
-      .map(&:to_s)
   end
 end
