@@ -6,12 +6,12 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-require_relative '../runner'
+require_relative '../docker_image'
 
 # Describe a command
 #
 # Command is able to run itself.
-class Kamaze::DockerImage::Runner::Command
+class Kamaze::DockerImage::Command
   autoload :Shellwords, 'shellwords'
 
   # @return [Hash]

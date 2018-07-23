@@ -15,7 +15,8 @@ require 'docker'
 # @see Kamaze::DockerImage::Concern::Setup#default_commands
 class Kamaze::DockerImage::Runner
   autoload :Storage, "#{__dir__}/runner/storage"
-  autoload :Command, "#{__dir__}/runner/command"
+
+  Command = Kamaze::DockerImage::Command
 
   # @param [Kamaze::DockerImage] image
   #
