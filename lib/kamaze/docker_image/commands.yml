@@ -3,4 +3,5 @@
 :exec: ['exec', '%<opt_it>s', '%<run_as>s']
 :run: ['run', '%<opt_it>s', '%<tag>s']
 :start: ['run', '-d', '--name', '%<run_as>s', '%<tag>s']
-:stop: ['rm', '-f', '%<run_as>s']
+:stop: ['stop', '%<run_as>s']
+:rm: ['rm', '%<run_as>s']

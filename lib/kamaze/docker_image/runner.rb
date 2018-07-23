@@ -52,8 +52,13 @@ class Kamaze::DockerImage::Runner
     command(:stop).run(&block) if started?
   end
 
+  def rm(&block)
+    command(:rm).run(&block) if started?
+  end
+
   def restart(&block)
     stop(&block)
+    rm(&block)
     start(&block)
   end
 
