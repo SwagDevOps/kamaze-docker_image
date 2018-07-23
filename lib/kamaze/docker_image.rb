@@ -59,7 +59,9 @@ class Kamaze::DockerImage
 
   autoload :Pathname, 'pathname'
 
+  autoload :Command, "#{__dir__}/docker_image/command"
   autoload :Runner, "#{__dir__}/docker_image/runner"
+  autoload :SSH, "#{__dir__}/docker_image/ssh"
   autoload :Loader, "#{__dir__}/docker_image/loader"
   autoload :VERSION, "#{__dir__}/docker_image/version"
 
@@ -117,6 +119,11 @@ class Kamaze::DockerImage
   # @return [Pathname]
   def path
     Pathname.new(@path)
+  end
+
+  # @return [SSH]
+  def ssh
+    SSH.new(self)
   end
 
   # @see Runner#actions
