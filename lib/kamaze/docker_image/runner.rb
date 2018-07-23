@@ -7,16 +7,18 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../docker_image'
-require 'docker'
+require_relative 'concern/docker'
 
 # Runner provide methods to execute image related actions
 #
 # @see #actions
 # @see Kamaze::DockerImage::Concern::Setup#default_commands
 class Kamaze::DockerImage::Runner
-  autoload :Storage, "#{__dir__}/runner/storage"
+  include Kamaze::DockerImage::Concern::Docker
 
   Command = Kamaze::DockerImage::Command
+
+  autoload :Storage, "#{__dir__}/runner/storage"
 
   # @param [Kamaze::DockerImage] image
   #
@@ -72,14 +74,14 @@ class Kamaze::DockerImage::Runner
   #
   # @return [Boolean]
   def started?
-    !fetch_containers.empty?
+    !fetch_containers(config.fetch(:run_as)).empty?
   end
 
   # Denote container is running.
   #
   # @return [Boolean]
   def running?
-    !fetch_containers(:running).empty?
+    !fetch_containers(config.fetch(:run_as), :running).empty?
   end
 
   protected
@@ -101,22 +103,5 @@ class Kamaze::DockerImage::Runner
     command = commands.fetch(name.to_sym)
 
     Command.new(command, config, extra)
-  end
-
-  # Fetch containers
-  #
-  # @param states [Array|nil] states
-  # @return [Array<Docker::Container>]
-  def fetch_containers(states = nil)
-    unless states.nil?
-      states = (states.is_a?(Array) ? states : [states]).map(&:to_s)
-      states = nil if states.empty?
-    end
-
-    Docker::Container.all(all: true).keep_if do |c|
-      states.to_a.empty? ? true : states.include?(c.info.fetch('State'))
-    end.keep_if do |c|
-      c.info.fetch('Names').include?("/#{config.fetch(:run_as)}")
-    end
   end
 end
