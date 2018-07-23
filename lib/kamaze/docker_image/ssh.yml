@@ -3,4 +3,13 @@
 :executable: ssh # Path to executable, or name.
 :port: 22
 :user: root
-:command: ['%<executable>s', '-p', '%<port>s', '%<user>s@%<host>s']
+# Following command is intended to avoid:
+# "The authenticity of host 'hostname' can't be established"
+# but is specific to OpenSSH.
+:command: [
+  '%<executable>s',
+  '-o', 'UserKnownHostsFile=/dev/null',
+  '-o', 'StrictHostKeyChecking=no',
+  '-p', '%<port>s',
+  '%<user>s@%<host>s',
+]
