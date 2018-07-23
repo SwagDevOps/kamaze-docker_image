@@ -51,6 +51,7 @@ module Kamaze::DockerImage::Concern::Setup
       @docker_bin = 'docker'
       @exec_command = 'bash -il'
       @commands = default_commands
+      @ssh = {}
     end
   end
 

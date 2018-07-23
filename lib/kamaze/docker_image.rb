@@ -45,6 +45,11 @@ class Kamaze::DockerImage
   # @return [String]
   attr_reader :run_as
 
+  # Config related to ssh.
+  #
+  # @return [Hash|nil]
+  attr_reader :ssh
+
   # Executable path or name for ``docker``
   #
   # @return [String]
@@ -122,7 +127,7 @@ class Kamaze::DockerImage
   end
 
   # @return [SSH]
-  def ssh
+  def ssh_runner
     SSH.new(self)
   end
 
@@ -172,6 +177,9 @@ class Kamaze::DockerImage
   # @see Concern::Setup#setup_defaults
   # @type [String]
   attr_writer :exec_command
+
+  # @type [Hash]
+  attr_writer :ssh
 
   # @see Concern::Setup#setup_defaults
   # @type [Hash]

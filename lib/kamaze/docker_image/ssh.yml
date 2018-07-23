@@ -1,6 +1,6 @@
 ---
-:enabled: true
-:executable: ssh
+:enabled: false  # Denote ssh task is enabled.
+:executable: ssh # Path to executable, or name.
 :port: 22
 :user: root
 :command: ['%<executable>s', '-p', '%<port>s', '%<user>s@%<host>s']

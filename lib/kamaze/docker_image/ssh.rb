@@ -33,7 +33,9 @@ class Kamaze::DockerImage::SSH
   #
   # @see Kamaze::DockerImage::Concern::Setup#default_commands
   def initialize(image)
-    @config = { ssh: image.to_h[:ssh].to_h.merge(defaults) }.merge(image.to_h)
+    defaults.merge(image.to_h[:ssh].to_h).tap do |ssh|
+      @config = image.to_h.merge(ssh: ssh).freeze
+    end
   end
 
   # @raise [Errno::ENONET]
