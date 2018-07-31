@@ -10,6 +10,8 @@ require_relative '../docker_image'
 require_relative 'concern/docker'
 autoload :YAML, 'yaml'
 autoload :Pathname, 'pathname'
+autoload :Shellwords, 'shellwords'
+autoload :Timeout, 'timeout'
 autoload :Cliver, 'cliver'
 
 # Runner provide methods to connect into image using ssh.
@@ -39,10 +41,25 @@ class Kamaze::DockerImage::SSH
   end
 
   # @raise [Errno::ENONET]
-  def call(&block)
+  def call(cmd = nil, &block)
     raise Errno::ENONET unless network?
+    wait
+  rescue Timeout::Error # rubocop:disable Lint/HandleExceptions
+  ensure
+    command(cmd).run(&block)
+  end
 
-    command.run(&block)
+  # Wait until ssh is available.
+  def wait
+    Timeout.timeout(config.fetch(:ssh).fetch(:timeout)) do
+      loop do
+        command(config.fetch(:ssh).fetch(:test)).tap do |command|
+          yield(self) if command.execute
+
+          sleep(0.5)
+        end
+      end
+    end
   end
 
   # Get defaults for config.
@@ -53,10 +70,13 @@ class Kamaze::DockerImage::SSH
   end
 
   # @return [Command]
-  def command
-    command = config.fetch(:ssh).fetch(:command).map { |w| w % params }
+  def command(cmd = nil)
+    cmd = Shellwords.split(cmd) if cmd.is_a?(String)
 
-    Command.new(command, config)
+    config.fetch(:ssh).fetch(:command)
+          .map { |w| w % params }
+          .push(*cmd.to_a)
+          .tap { |command| return Command.new(command, config) }
   end
 
   # Params used to shape command.

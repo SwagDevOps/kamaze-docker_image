@@ -3,6 +3,9 @@
 :executable: ssh # Path to executable, or name.
 :port: 22
 :user: root
+# command used to test, during timeout/wait
+:test: ['true']
+:timeout: 10
 # Following command is intended to avoid:
 # "The authenticity of host 'hostname' can't be established"
 # but is specific to OpenSSH.
