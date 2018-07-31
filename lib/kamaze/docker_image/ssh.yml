@@ -13,6 +13,7 @@
   '%<executable>s',
   '-o', 'UserKnownHostsFile=/dev/null',
   '-o', 'StrictHostKeyChecking=no',
+  '-o', 'LogLevel=ERROR',
   '-p', '%<port>s',
   '%<user>s@%<host>s',
 ]
