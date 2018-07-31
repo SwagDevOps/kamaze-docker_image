@@ -3,17 +3,16 @@
 # Easyfier for Docker image projects
 
 This ``gem`` can be used with [``rake``][rake], in order to provide
-recurrent tasks related to Docker image development. ATM the following tasks
-are provided:
+recurrent tasks related to Docker image development. The following tasks
+are provided (as default):
 
 ```
 rake build                 # Build image
 rake exec[command]         # Run a command in a running container
 rake restart               # Restart container
 rake run[command]          # Run a command in a new container
-rake start                 # Start container as sample_image
+rake start                 # Start container as awseome_image
 rake stop                  # Stop container
-
 ```
 
 ## Sample of use
@@ -21,8 +20,6 @@ rake stop                  # Stop container
 In your ``Rakefile``:
 
 ```ruby
-require 'rubygems'
-require 'bundler/setup'
 require 'kamaze/docker_image'
 
 Kamaze::DockerImage.new do |config|
@@ -35,6 +32,27 @@ end
 
 task default: [:build]
 ```
+
+## Secure Shell (SSH)
+
+Optionally, ``ssh`` task can be enabled:
+
+```ruby
+Kamaze::DockerImage.new do |config|
+  config.ssh = {
+    enabled: true
+  }
+end
+```
+
+Now, you can do:
+
+```
+rake build restart ssh[pstree]
+rake ssh
+```
+
+SSH will wait (using a timeout) until your container is up and running.
 
 ## Install
 
