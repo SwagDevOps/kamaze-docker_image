@@ -50,11 +50,13 @@ class Kamaze::DockerImage::SSH
   end
 
   # Wait until ssh is available.
+  #
+  # @return [self]
   def wait
     Timeout.timeout(config.fetch(:ssh).fetch(:timeout)) do
       loop do
         command(config.fetch(:ssh).fetch(:test)).tap do |command|
-          yield(self) if command.execute
+          return block_given? ? yield(self) : self if command.execute
 
           sleep(0.5)
         end
