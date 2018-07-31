@@ -56,7 +56,9 @@ class Kamaze::DockerImage::SSH
     Timeout.timeout(config.fetch(:ssh).fetch(:timeout)) do
       loop do
         command(config.fetch(:ssh).fetch(:test)).tap do |command|
-          return block_given? ? yield(self) : self if command.execute
+          if command.execute
+            return block_given? ? yield(self) : self
+          end
 
           sleep(0.5)
         end
