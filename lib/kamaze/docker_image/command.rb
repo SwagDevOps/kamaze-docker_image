@@ -45,6 +45,13 @@ class Kamaze::DockerImage::Command
     sh(*self.to_a, &block)
   end
 
+  alias call run
+
+  # @return [Boolean]
+  def execute
+    system(*self.to_a)
+  end
+
   protected
 
   # @return [Array<String>]
