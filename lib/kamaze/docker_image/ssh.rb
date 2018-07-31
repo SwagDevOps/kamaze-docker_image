@@ -40,7 +40,12 @@ class Kamaze::DockerImage::SSH
     end
   end
 
+  # Connect to ssh (executing optional command ``cmd``).
+  #
+  # @param [Array<String|Object>] cmd
   # @raise [Errno::ENONET]
+  #
+  # @see #command
   def call(cmd = nil, &block)
     raise Errno::ENONET unless network?
     wait
@@ -87,12 +92,15 @@ class Kamaze::DockerImage::SSH
   #
   # @return [Hash{Symbol => Object}]
   def params
+    # rubocop:disable Style/TernaryParentheses
     {
       executable: executable,
       port: config.fetch(:ssh).fetch(:port),
       user: config.fetch(:ssh).fetch(:user),
-      host: network.fetch(0)
+      host: network.fetch(0),
+      opt_pty: ($stdout.tty? and $stderr.tty?) ? '-t' : '-T',
     }
+    # rubocop:enable Style/TernaryParentheses
   end
 
   # Get absolute path for executable.
