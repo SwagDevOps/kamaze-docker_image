@@ -47,6 +47,7 @@ describe Kamaze::DockerImage, :docker_image do
        :name,
        :path,
        :run_as,
+       :ssh,
        :tag,
        :tasks_load,
        :tasks_ns,
@@ -63,7 +64,7 @@ describe Kamaze::DockerImage, :docker_image do
 
   context '#commands.keys.sort' do
     it do
-      [:build, :exec, :run, :start, :stop]
+      [:build, :exec, :rm, :run, :start, :stop]
         .sort
         .tap { |keys| expect(subject.commands.keys.sort).to eq(keys) }
     end
