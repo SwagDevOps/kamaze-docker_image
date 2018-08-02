@@ -2,10 +2,13 @@
 
 require 'pathname'
 require 'sham'
-require 'sys/proc'
 require_relative 'local'
 
-Sys::Proc.progname = nil
+if Gem::Specification.find_all_by_name('sys-proc').any?
+  require 'sys/proc'
+
+  Sys::Proc.progname = 'rspec'
+end
 
 Sham::Config.activate!(Pathname.new(__dir__).join('..').realpath)
 
