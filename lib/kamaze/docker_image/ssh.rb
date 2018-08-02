@@ -23,7 +23,7 @@ autoload :Cliver, 'cliver'
 #
 # ssh = Kamaze::DockerImage::SSH.new(run_as: 'kamaze_sample_image')
 # ```
-class Kamaze::DockerImage::SSH
+class Kamaze::DockerImage::SSH < Hash
   include Kamaze::DockerImage::Concern::Docker
 
   Command = Kamaze::DockerImage::Command
@@ -37,7 +37,7 @@ class Kamaze::DockerImage::SSH
   def initialize(image)
     defaults.merge(image.to_h[:ssh].to_h).tap do |ssh|
       @config = image.to_h.merge(ssh: ssh).freeze
-    end
+    end.each { |k, v| self[k] = v }
   end
 
   # Connect to ssh (executing optional command ``cmd``).

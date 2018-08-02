@@ -81,6 +81,7 @@ class Kamaze::DockerImage
     setup(caller_locations, &block)
 
     @runner = Runner.new(self)
+    @ssh = SSH.new(self).freeze
     tasks_load! if tasks_load?
   end
 
@@ -124,11 +125,6 @@ class Kamaze::DockerImage
   # @return [Pathname]
   def path
     Pathname.new(@path)
-  end
-
-  # @return [SSH]
-  def ssh_runner
-    SSH.new(self)
   end
 
   # @see Runner#actions
