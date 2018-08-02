@@ -2,6 +2,7 @@
 
 require_relative 'lib/kamaze-docker_image'
 require 'kamaze/docker_image'
+require 'kamaze/project'
 require 'sys/proc'
 
 Sys::Proc.progname = nil
@@ -33,4 +34,11 @@ Kamaze::DockerImage.new do |config|
   config.path     = 'image'
   config.run_as   = config.name.tr('/', '_')
   config.tasks_ns = 'docker'
+  config.ssh      = {
+    enabled: true,
+  }
+end.tap do |image|
+  self.singleton_class.__send__(:define_method, :image) do
+    image
+  end
 end
