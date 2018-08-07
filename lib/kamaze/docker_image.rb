@@ -85,11 +85,18 @@ class Kamaze::DockerImage
     tasks_load! if tasks_load?
   end
 
-  # Denote image is running/started
+  # Denote image is started.
   #
   # @return [Boolean]
   def started?
     runner.started?
+  end
+
+  # Denote image is running?.
+  #
+  # @return [Boolean]
+  def running?
+    runner.running?
   end
 
   # Get tag
@@ -102,8 +109,6 @@ class Kamaze::DockerImage
   end
 
   alias to_s tag
-
-  alias running? started?
 
   # @return [Hash]
   def to_h
