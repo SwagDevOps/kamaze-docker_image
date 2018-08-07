@@ -67,7 +67,7 @@ class Kamaze::DockerImage::Runner
 
   # @return [Array<Symbol>]
   def actions
-    %i[restart start stop exec run build].sort
+    %i[restart start stop exec run build rm].sort
   end
 
   # Denote container is started.
