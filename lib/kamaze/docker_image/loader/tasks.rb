@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+autoload(:YAML, 'yaml')
+
 # Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
@@ -32,10 +34,12 @@ wrapper = lambda do |task, args = nil, &block|
   end
 
   cname = task.name.gsub(/^#{image.tasks_ns}:/, '')
+  # @formatter:off
   names = {
     pre: namer.call("pre_#{cname}"),
     post: namer.call("post_#{cname}"),
   }
+  # @formatter:on
 
   names.fetch(:pre).tap { |name| tasks.call(name) }
   block.call
@@ -46,8 +50,10 @@ end
 # tasks --------------------------------------------------------------
 
 desc 'Build image'
-task namer.call(:build) do |task|
-  wrapper.call(task) { image.build }
+task namer.call(:build), [:cached] do |task, args|
+  YAML.safe_load(args.key?(:cached) ? args[:cached] : 'true').tap do |cached|
+    wrapper.call(task, args) { cached ? image.build : image.rebuild }
+  end
 end
 
 desc 'Run a command in a running container'
