@@ -99,6 +99,13 @@ class Kamaze::DockerImage
     runner.running?
   end
 
+  # Get name of available commands.
+  #
+  # @return [Array<Symbol>]
+  def available_commands
+    commands.clone.reject { |_k, args| args.nil? }.to_h.keys
+  end
+
   # Get tag
   #
   # tag has the following format: ``#{name}:#{version}``
