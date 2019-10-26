@@ -8,6 +8,8 @@
 
 autoload(:YAML, 'yaml')
 
+# @type [Kamaze::DockerImage] image
+
 # Make task name using namespace (from image)
 #
 # @return [String]
@@ -53,6 +55,13 @@ desc 'Build image'
 task namer.call(:build), [:cached] do |task, args|
   YAML.safe_load(args.key?(:cached) ? args[:cached] : 'true').tap do |cached|
     wrapper.call(task, args) { cached ? image.build : image.rebuild }
+  end
+end
+
+if image.available_commands.include?(:push)
+  desc 'Push image'
+  task namer.call(:push) do |task|
+    wrapper.call(task) { image.push }
   end
 end
 
