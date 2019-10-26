@@ -202,8 +202,6 @@ class Kamaze::DockerImage
 
   # Load tasks
   def tasks_load!
-    Loader.new(self).call
-
-    self
+    self.tap { Loader.new(self).call }
   end
 end
