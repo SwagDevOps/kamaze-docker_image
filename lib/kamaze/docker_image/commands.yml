@@ -6,3 +6,4 @@
 :start: ['run', '-d', '--name', '%<run_as>s', '%<tag>s']
 :stop: ['stop', '%<run_as>s']
 :rm: ['rm', '%<run_as>s']
+push: ['push', '%<tag>s']
