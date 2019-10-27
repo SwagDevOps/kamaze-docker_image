@@ -103,7 +103,7 @@ class Kamaze::DockerImage
   #
   # @return [Array<Symbol>]
   def available_commands
-    commands.clone.reject { |_k, args| args.nil? }.to_h.keys
+    commands.clone.reject { |_k, args| args.nil? }.to_h.keys.sort
   end
 
   # Get tag
