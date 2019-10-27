@@ -2,6 +2,12 @@
 
 require_relative '../lib/kamaze-docker_image'
 
+if Gem::Specification.find_all_by_name('sys-proc').any?
+  require 'sys/proc'
+
+  Sys::Proc.progname = 'rspec'
+end
+
 [
   :constants,
   :configure,

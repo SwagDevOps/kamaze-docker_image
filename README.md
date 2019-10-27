@@ -7,8 +7,9 @@ recurrent tasks related to Docker image development. The following tasks
 are provided (as default):
 
 ```
-rake build                 # Build image
+rake build[cached]         # Build image
 rake exec[command]         # Run a command in a running container
+rake push                  # Push image
 rake restart               # Restart container
 rake run[command]          # Run a command in a new container
 rake start                 # Start container as awseome_image

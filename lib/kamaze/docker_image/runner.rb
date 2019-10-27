@@ -18,6 +18,12 @@ class Kamaze::DockerImage::Runner
 
   Command = Kamaze::DockerImage::Command
 
+  # Available actions
+  #
+  # Actions registrable on ``image``.
+  # @see Runner#actions
+  ACTIONS = %i[restart start stop exec run build push rm rebuild].sort
+
   autoload :Storage, "#{__dir__}/runner/storage"
 
   # @param [Kamaze::DockerImage] image
@@ -32,8 +38,19 @@ class Kamaze::DockerImage::Runner
     @commands.freeze
   end
 
+  # Build image
   def build(&block)
     command(:build).run(&block)
+  end
+
+  # Push image
+  def push(&block)
+    command(:push).run(&block)
+  end
+
+  # Build image (do not use cache)
+  def rebuild(&block)
+    command(:rebuild).run(&block)
   end
 
   def run(extra = nil, &block)
@@ -67,7 +84,7 @@ class Kamaze::DockerImage::Runner
 
   # @return [Array<Symbol>]
   def actions
-    %i[restart start stop exec run build rm].sort
+    ACTIONS
   end
 
   # Denote container is started.

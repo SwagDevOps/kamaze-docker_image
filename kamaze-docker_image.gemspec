@@ -4,10 +4,10 @@
 
 Gem::Specification.new do |s|
   s.name        = "kamaze-docker_image"
-  s.version     = "0.0.1"
-  s.date        = "2017-06-26"
+  s.version     = "0.0.2"
+  s.date        = "2019-10-27"
   s.summary     = "Easyfier for (docker) image projects"
-  s.description = "Provide some rake tasks to manage image."
+  s.description = "Provide rake tasks to manage image."
 
   s.licenses    = ["GPL-3.0"]
   s.authors     = ["Dimitri Arrigoni"]

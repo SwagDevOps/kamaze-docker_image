@@ -1,7 +1,9 @@
 ---
 :build: ['build', '--tag', '%<tag>s', '--rm', '%<path>s']
+:rebuild: ['build', '--no-cache', '--tag', '%<tag>s', '--rm', '%<path>s']
 :exec: ['exec', '%<opt_it>s', '%<run_as>s']
 :run: ['run', '%<opt_it>s', '%<tag>s']
 :start: ['run', '-d', '--name', '%<run_as>s', '%<tag>s']
 :stop: ['stop', '%<run_as>s']
 :rm: ['rm', '%<run_as>s']
+push: ['push', '%<tag>s']
