@@ -58,19 +58,19 @@ describe Kamaze::DockerImage, :docker_image do
   end
 end
 
-[:build,
- :exec,
- :push,
- :rebuild,
- :rm,
- :run,
- :start,
- :stop].sort.tap do |available_commands|
-  describe Kamaze::DockerImage, :docker_image do
-    context '#commands' do
-      it { expect(subject.commands).to be_a(Hash) }
-    end
+describe Kamaze::DockerImage, :docker_image do
+  context '#commands' do
+    it { expect(subject.commands).to be_a(Hash) }
+  end
 
+  [:build,
+   :exec,
+   :push,
+   :rebuild,
+   :rm,
+   :run,
+   :start,
+   :stop].sort.tap do |available_commands|
     context '#commands.keys.sort' do
       it { expect(subject.commands.keys.sort).to eq(available_commands) }
     end
