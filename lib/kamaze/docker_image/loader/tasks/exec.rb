@@ -12,10 +12,7 @@ if image.available_commands.include?(:exec)
   desc 'Run a command in a running container'
 
   task helper.appoint(:exec), [:command] do |task, args|
-    helper.call(task, args) do
-      Rake::Task[namer.call(:start)].execute
-      image.exec(args[:command])
-    end
+    helper.call(task, args) { image.exec(args[:command]) }
 
     task.reenable
   end

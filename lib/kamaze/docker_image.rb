@@ -55,6 +55,8 @@ class Kamaze::DockerImage
   # @return [String]
   attr_reader :docker_bin
 
+  attr_reader :tasks_load
+
   # Get default command for ``exec``
   #
   # @see Runner#exec
@@ -103,7 +105,7 @@ class Kamaze::DockerImage
   #
   # @return [Array<Symbol>]
   def available_commands
-    commands.clone.reject { |_k, args| args.nil? }.to_h.keys
+    commands.clone.reject { |_k, args| args.nil? }.to_h.keys.sort
   end
 
   # Get tag
@@ -131,7 +133,7 @@ class Kamaze::DockerImage
 
   # @return [Boolean]
   def tasks_load?
-    !!@tasks_load
+    !!self.tasks_load
   end
 
   # @return [Pathname]

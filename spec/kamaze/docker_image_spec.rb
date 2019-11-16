@@ -17,6 +17,7 @@ describe Kamaze::DockerImage, :docker_image do
     expect(subject).to respond_to(:version).with(0).arguments
     expect(subject).to respond_to(:name).with(0).arguments
     expect(subject).to respond_to(:commands).with(0).arguments
+    expect(subject).to respond_to(:available_commands).with(0).arguments
   end
 end
 
@@ -62,11 +63,20 @@ describe Kamaze::DockerImage, :docker_image do
     it { expect(subject.commands).to be_a(Hash) }
   end
 
-  context '#commands.keys.sort' do
-    it do
-      [:build, :exec, :rm, :run, :start, :stop]
-        .sort
-        .tap { |keys| expect(subject.commands.keys.sort).to eq(keys) }
+  [:build,
+   :exec,
+   :push,
+   :rebuild,
+   :rm,
+   :run,
+   :start,
+   :stop].sort.tap do |available_commands|
+    context '#commands.keys.sort' do
+      it { expect(subject.commands.keys.sort).to eq(available_commands) }
+    end
+
+    context '#available_commands' do
+      it { expect(subject.available_commands).to eq(available_commands) }
     end
   end
 end
