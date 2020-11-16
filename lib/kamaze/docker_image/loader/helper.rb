@@ -48,9 +48,9 @@ class Kamaze::DockerImage::Loader::Helper
   # end
   # ```
   def wrap(task, **args, &block)
-    on_pre(task, args)
+    on_pre(task, **args)
     block.call
-    on_post(task, args)
+    on_post(task, **args)
   end
 
   alias call wrap
