@@ -36,6 +36,9 @@ class Kamaze::DockerImage::Loader::Helper
 
   # Execute related ``pre_`` and ``post_`` tasks
   #
+  # @param [Rake::Task] task
+  # @param [Hash{Symbol => Object}] args
+  #
   # Sample of use:
   #
   # ```ruby
@@ -47,10 +50,10 @@ class Kamaze::DockerImage::Loader::Helper
   #   pp(task, args)
   # end
   # ```
-  def wrap(task, **args, &block)
-    on_pre(task, **args)
+  def wrap(task, args, &block)
+    on_pre(task, args)
     block.call
-    on_post(task, **args)
+    on_post(task, args)
   end
 
   alias call wrap
@@ -68,12 +71,12 @@ class Kamaze::DockerImage::Loader::Helper
   end
 
   # @param [Rake::Task] task
-  def on_pre(task, **args)
+  def on_pre(task, args)
     task_call(on: :pre, from: task, args: args)
   end
 
   # @param [Rake::Task] task
-  def on_post(task, **args)
+  def on_post(task, args)
     task_call(on: :post, from: task, args: args)
   end
 
