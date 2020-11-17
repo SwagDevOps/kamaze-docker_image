@@ -13,7 +13,7 @@ require_relative '../loader'
 # Sample of use:
 #
 # ```ruby
-# Empty.binding.tap do |b|
+# Empty.call do |b|
 #   b.local_variable_set(:answer, 42)
 #   b.local_variable_set(:home, '127.0.0.1')
 #
@@ -22,20 +22,8 @@ require_relative '../loader'
 # ```
 module Kamaze::DockerImage::Loader::Empty
   class << self
-    # @return [Binding]
-    def binding
-      load_dsl
-
-      super.tap do |b|
-        b.local_variable_set(:ready, dsl?)
-      end
-    end
-
-    # @return [Rake::DSL|nil]
-    def dsl
-      Object.const_get('Rake::DSL')
-    rescue NameError
-      nil
+    def call
+      yield(binding)
     end
 
     # Denote ``DSL`` is defined.
@@ -47,13 +35,23 @@ module Kamaze::DockerImage::Loader::Empty
 
     protected
 
+    # @return [Binding]
+    def binding
+      -> { super }.tap { load_dsl }.call
+    end
+
+    # @return [Rake::DSL, nil]
+    def dsl
+      Object.const_get('Rake::DSL')
+    rescue NameError
+      nil
+    end
+
     # Apply ``Rake::DSL``
     #
     # @return [self]
     def load_dsl
-      self.extend(dsl) if dsl
-
-      self
+      self.tap { self.extend(dsl) if dsl? }
     end
   end
 end

@@ -32,8 +32,9 @@ end
 describe Kamaze::DockerImage::Loader, :loader do
   let(:subject) { sham!(:loader).maker.call(:base) }
 
-  context '#empty_binding' do
-    it { expect(subject.__send__(:empty_binding)).to be_a(Binding) }
+  context '#context' do
+    it { expect(subject.__send__(:context)).to be_a(Module) }
+    it { expect(subject.__send__(:context)).to eq(Kamaze::DockerImage::Loader::Empty) }
   end
 
   context '#file' do

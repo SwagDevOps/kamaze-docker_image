@@ -22,32 +22,25 @@ class Kamaze::DockerImage::Loader
   #
   # @return [self]
   def call
-    if loadable?
-      empty_binding.tap do |b|
-        b.local_variable_set(:image, image)
-        b.eval(content)
+    self.tap do
+      if loadable?
+        context.call do |b|
+          b.local_variable_set(:image, image)
+          b.eval(content)
+        end
       end
     end
-
-    self
   end
 
   # @return [Boolean]
   def loadable?
-    empty_binding.local_variable_get(:ready)
+    context.dsl?
   end
 
   protected
 
   # @return [Kamaze::DockerImage]
   attr_reader :image
-
-  # Get en empty binding.
-  #
-  # @return [Empty]
-  def empty_binding
-    Empty.binding
-  end
 
   # @return [Pathname]
   def file
@@ -59,5 +52,10 @@ class Kamaze::DockerImage::Loader
   # @return [String]
   def content
     file.read
+  end
+
+  # @return [Class<Empty>]
+  def context
+    Empty
   end
 end
