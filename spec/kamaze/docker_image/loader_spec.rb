@@ -34,7 +34,7 @@ describe Kamaze::DockerImage::Loader, :loader do
 
   context '#context' do
     it { expect(subject.__send__(:context)).to be_a(Module) }
-    it { expect(subject.__send__(:context)).to eq(Kamaze::DockerImage::Loader::Empty) }
+    it { expect(subject.__send__(:context)).to eq(Kamaze::DockerImage::Loader::Context) }
   end
 
   context '#file' do

@@ -11,7 +11,7 @@ require_relative '../docker_image'
 # Loader for tasks (using eval binding)
 class Kamaze::DockerImage::Loader
   autoload :Pathname, 'pathname'
-  autoload :Empty, "#{__dir__}/loader/empty"
+  autoload :Context, "#{__dir__}/loader/context"
 
   # @param [Kamaze::DockerImage] image
   def initialize(image)
@@ -54,8 +54,8 @@ class Kamaze::DockerImage::Loader
     file.read
   end
 
-  # @return [Class<Empty>]
+  # @return [Module<Context>]
   def context
-    Empty
+    Context
   end
 end

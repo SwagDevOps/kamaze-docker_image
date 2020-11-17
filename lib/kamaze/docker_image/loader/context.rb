@@ -13,14 +13,14 @@ require_relative '../loader'
 # Sample of use:
 #
 # ```ruby
-# Empty.call do |b|
+# Context.call do |b|
 #   b.local_variable_set(:answer, 42)
 #   b.local_variable_set(:home, '127.0.0.1')
 #
 #   b.eval(content)
 # end
 # ```
-module Kamaze::DockerImage::Loader::Empty
+module Kamaze::DockerImage::Loader::Context
   class << self
     def call
       yield(binding)

@@ -8,7 +8,7 @@
 
 require_relative 'helper'
 
-# @type [Kamaze::DockerImage::Loader::Empty] self
+# @type [Kamaze::DockerImage::Loader::Context] self
 self.singleton_class.__send__(:define_method, :helper) do
   Kamaze::DockerImage::Loader::Helper.new(image)
 end
