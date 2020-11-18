@@ -7,10 +7,11 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../concern'
-require 'docker'
 
 # Provides setup (used during initialization) and related methods.
 module Kamaze::DockerImage::Concern::Docker
+  autoload(:Docker, 'docker')
+
   protected
 
   # Fetch containers
