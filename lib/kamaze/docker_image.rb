@@ -64,18 +64,20 @@ class Kamaze::DockerImage
   # @return [String]
   attr_reader :exec_command
 
-  autoload :Pathname, 'pathname'
+  autoload(:Pathname, 'pathname')
+  autoload(:Open3, 'open3')
+  autoload(:JSON, 'json')
 
-  autoload :Command, "#{__dir__}/docker_image/command"
-  autoload :Runner, "#{__dir__}/docker_image/runner"
-  autoload :SSH, "#{__dir__}/docker_image/ssh"
-  autoload :Loader, "#{__dir__}/docker_image/loader"
-  autoload :VERSION, "#{__dir__}/docker_image/version"
+  {
+    Concern: 'concern',
+    Command: 'command',
+    Runner: 'runner',
+    SSH: 'ssh',
+    Loader: 'loader',
+    VERSION: 'version',
+  }.each { |k, v| autoload(k, "#{__dir__}/docker_image/#{v}") }
 
-  [:setup, :readable_attrs].each do |req|
-    require_relative "#{__dir__}/docker_image/concern/#{req}"
-  end
-
+  include Concern::Executable
   include Concern::Setup
   include Concern::ReadableAttrs
 
@@ -85,6 +87,20 @@ class Kamaze::DockerImage
     @runner = Runner.new(self)
     @ssh = SSH.new(self).freeze
     tasks_load! if tasks_load?
+  end
+
+  # Get image id (through docker command).
+  #
+  # @return [String, nil]
+  def id
+    # docker image list --format "{{json .ID}}" image_name:image_version
+    [
+      self.to_h[:docker_bin] || executable
+    ].concat(['image', 'list', '--format', '{{json .ID}}', self.to_s]).yield_self do |command|
+      Open3.capture3(*command).tap do |stdout, _, status|
+        return (status.success? ? JSON.parse(stdout.lines.first) : nil).freeze
+      end
+    end
   end
 
   # Denote image is started.
@@ -143,17 +159,13 @@ class Kamaze::DockerImage
 
   # @see Runner#actions
   def method_missing(method, *args, &block)
-    if respond_to_missing?(method)
-      return runner.public_send(method, *args, &block)
-    end
-
-    super
+    respond_to_missing?(method) ? runner.public_send(method, *args, &block) : super
   end
 
   def respond_to_missing?(method, include_private = false)
-    flag = (runner&.actions).to_a.include?(method.to_sym)
-
-    flag || super(method, include_private)
+    # rubocop:disable Style/RedundantParentheses
+    (runner&.actions).to_a.include?(method.to_sym) || super(method, include_private)
+    # rubocop:enable Style/RedundantParentheses
   end
 
   protected
