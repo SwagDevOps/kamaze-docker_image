@@ -11,6 +11,12 @@ require_relative '../docker_image'
 # rubocop:disable Style/Documentation
 
 module Kamaze::DockerImage::Concern
+  {
+    Setup: 'setup',
+    Docker: 'docker',
+    Executable: 'executable',
+    ReadableAttrs: 'readable_attrs',
+  }.each { |k, v| autoload(k, "#{__dir__}/concern/#{v}") }
 end
 
 # rubocop:enable Style/Documentation
