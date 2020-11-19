@@ -12,8 +12,8 @@ require_relative '../docker_image'
 
 module Kamaze::DockerImage::Concern
   {
+    Containers: 'containers',
     Setup: 'setup',
-    Docker: 'docker',
     Executable: 'executable',
     ReadableAttrs: 'readable_attrs',
   }.each { |k, v| autoload(k, "#{__dir__}/concern/#{v}") }

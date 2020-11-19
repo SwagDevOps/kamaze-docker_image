@@ -9,6 +9,8 @@
 require_relative '../concern'
 
 # Provides setup (used during initialization) and related methods.
+#
+# @todo remove this file, it SHOULD be useless
 module Kamaze::DockerImage::Concern::Docker
   autoload(:Docker, 'docker')
 

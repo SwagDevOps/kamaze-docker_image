@@ -25,12 +25,14 @@ Gem::Specification.new do |s|
     "lib/kamaze/docker_image.rb",
     "lib/kamaze/docker_image/command.rb",
     "lib/kamaze/docker_image/concern.rb",
+    "lib/kamaze/docker_image/concern/containers.rb",
     "lib/kamaze/docker_image/concern/docker.rb",
+    "lib/kamaze/docker_image/concern/executable.rb",
     "lib/kamaze/docker_image/concern/readable_attrs.rb",
     "lib/kamaze/docker_image/concern/setup.rb",
     "lib/kamaze/docker_image/concern/setup/config.rb",
     "lib/kamaze/docker_image/loader.rb",
-    "lib/kamaze/docker_image/loader/empty.rb",
+    "lib/kamaze/docker_image/loader/context.rb",
     "lib/kamaze/docker_image/loader/helper.rb",
     "lib/kamaze/docker_image/loader/tasks.rb",
     "lib/kamaze/docker_image/loader/tasks/build.rb",
@@ -49,7 +51,6 @@ Gem::Specification.new do |s|
   ]
 
   s.add_runtime_dependency("cliver", ["~> 0.3"])
-  s.add_runtime_dependency("docker-api", ["~> 1.34"])
   s.add_runtime_dependency("kamaze-version", ["~> 1.0"])
 end
 

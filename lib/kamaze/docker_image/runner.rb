@@ -7,15 +7,15 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../docker_image'
-require_relative 'concern/docker'
 
 # Runner provide methods to execute image related actions
 #
 # @see #actions
 # @see Kamaze::DockerImage::Concern::Setup#default_commands
 class Kamaze::DockerImage::Runner
-  include Kamaze::DockerImage::Concern::Docker
+  include Kamaze::DockerImage::Concern::Containers
 
+  # noinspection RubyConstantNamingConvention
   Command = Kamaze::DockerImage::Command
 
   # Available actions
@@ -91,14 +91,16 @@ class Kamaze::DockerImage::Runner
   #
   # @return [Boolean]
   def started?
-    !fetch_containers(config.fetch(:run_as)).empty?
+    # !fetch_containers(config.fetch(:run_as)).empty?
+    containers.fetch(:run_as) != nil
   end
 
   # Denote container is running.
   #
   # @return [Boolean]
   def running?
-    !fetch_containers(config.fetch(:run_as), :running).empty?
+    # !fetch_containers(config.fetch(:run_as), :running).empty?
+    !!containers.fetch(:run_as)&.running?
   end
 
   protected

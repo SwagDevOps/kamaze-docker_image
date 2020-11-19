@@ -9,7 +9,6 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'cliver', '~> 0.3'
-  gem 'docker-api', '~> 1.34'
   gem 'kamaze-version', '~> 1.0'
 end
 
