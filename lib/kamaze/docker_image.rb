@@ -98,7 +98,9 @@ class Kamaze::DockerImage
       self.to_h[:docker_bin] || executable
     ].concat(['image', 'list', '--format', '{{json .ID}}', self.to_s]).yield_self do |command|
       Open3.capture3(*command).tap do |stdout, _, status|
-        return (status.success? ? JSON.parse(stdout.lines.first) : nil).freeze
+        return nil unless status.success?
+
+        return stdout.lines.empty? ? nil : JSON.parse(stdout.lines.first)
       end
     end
   end
