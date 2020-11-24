@@ -41,7 +41,7 @@ module Kamaze::DockerImage::Concern::Containers
             end
           end
         end
-      end.map { |h| [h.info['Name'].gsub(%r{^/*}, '').to_sym, h] }.to_h
+      end.map { |h| [h.info['Name'].gsub(%r{^/*}, '').to_s, h] }.to_h
     end
   end
 end
