@@ -92,7 +92,7 @@ class Kamaze::DockerImage::Runner
   # @return [Boolean]
   def started?
     # !fetch_containers(config.fetch(:run_as)).empty?
-    containers.fetch(:run_as) != nil
+    config.fetch(:run_as).yield_self { |name| !containers[name].nil? }
   end
 
   # Denote container is running.
@@ -100,7 +100,7 @@ class Kamaze::DockerImage::Runner
   # @return [Boolean]
   def running?
     # !fetch_containers(config.fetch(:run_as), :running).empty?
-    !!containers.fetch(:run_as)&.running?
+    config.fetch(:run_as).yield_self { |name| containers[name]&.running? }
   end
 
   protected
