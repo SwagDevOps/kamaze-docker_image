@@ -50,7 +50,7 @@ class Kamaze::DockerImage::Loader::Helper
   #   pp(task, args)
   # end
   # ```
-  def wrap(task, args, &block)
+  def wrap(task, args = [], &block)
     on_pre(task, args)
     block.call
     on_post(task, args)
