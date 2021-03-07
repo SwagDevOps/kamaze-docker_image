@@ -19,7 +19,7 @@ group :development do
 
   gem 'listen', '~> 3.1'
   gem 'rake', '~> 12.3'
-  gem 'rubocop', '~> 0.56'
+  gem 'rubocop', '~> 1.0'
   gem 'rugged', '~> 1.0'
   gem 'sys-proc', '~> 1.1'
 end

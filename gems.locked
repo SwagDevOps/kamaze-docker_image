@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/SwagDevOps/kamaze-project.git
-  revision: 8fbcdaad6894e0daa17a34546f1ad92c6b064ae6
+  revision: 522c4114ba0cc071c01c2f4d9bcee8e9bda179f7
   branch: develop
   specs:
     kamaze-project (1.1.0)
@@ -17,7 +17,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    ast (2.4.1)
+    ast (2.4.2)
     cli-ui (1.4.0)
     cliver (0.3.2)
     coderay (1.1.3)
@@ -26,22 +26,22 @@ GEM
     diff-lcs (1.4.4)
     dotenv (2.7.6)
     dry-inflector (0.2.0)
-    ffi (1.13.1)
+    ffi (1.15.0)
     github-markup (3.0.5)
     interesting_methods (0.1.2)
     kamaze-version (1.0.2)
       dry-inflector (~> 0.1)
-    listen (3.3.1)
+    listen (3.4.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     method_source (1.0.0)
-    parallel (1.20.0)
-    parser (2.7.2.0)
+    parallel (1.20.1)
+    parser (3.0.0.0)
       ast (~> 2.4.1)
     pastel (0.8.0)
       tty-color (~> 0.5)
     process_lock (0.1.2)
-    pry (0.13.1)
+    pry (0.14.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
     pry-coolline (0.2.5)
@@ -51,34 +51,34 @@ GEM
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    redcarpet (3.5.0)
-    regexp_parser (1.8.2)
+    redcarpet (3.5.1)
+    regexp_parser (2.1.1)
     rexml (3.2.4)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
       rspec-mocks (~> 3.10.0)
-    rspec-core (3.10.0)
+    rspec-core (3.10.1)
       rspec-support (~> 3.10.0)
-    rspec-expectations (3.10.0)
+    rspec-expectations (3.10.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
-    rspec-mocks (3.10.0)
+    rspec-mocks (3.10.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
-    rspec-support (3.10.0)
-    rubocop (0.93.1)
+    rspec-support (3.10.2)
+    rubocop (1.11.0)
       parallel (~> 1.10)
-      parser (>= 2.7.1.5)
+      parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 1.8)
+      regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 0.6.0)
+      rubocop-ast (>= 1.2.0, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 1.4.0, < 2.0)
-    rubocop-ast (1.1.1)
+      unicode-display_width (>= 1.4.0, < 3.0)
+    rubocop-ast (1.4.1)
       parser (>= 2.7.1.5)
-    ruby-progressbar (1.10.1)
+    ruby-progressbar (1.11.0)
     rugged (1.1.0)
     sham (2.0.0)
     sys-proc (1.1.2)
@@ -88,21 +88,22 @@ GEM
     tty-cursor (0.7.1)
     tty-editor (0.6.0)
       tty-prompt (~> 0.22)
-    tty-prompt (0.22.0)
+    tty-prompt (0.23.0)
       pastel (~> 0.8)
       tty-reader (~> 0.8)
-    tty-reader (0.8.0)
+    tty-reader (0.9.0)
       tty-cursor (~> 0.7)
       tty-screen (~> 0.8)
       wisper (~> 2.0)
     tty-screen (0.8.1)
-    unicode-display_width (1.7.0)
+    unicode-display_width (2.0.0)
     unicode_utils (1.4.0)
     wisper (2.0.1)
-    yard (0.9.25)
+    yard (0.9.26)
 
 PLATFORMS
   ruby
+  x86_64-linux
 
 DEPENDENCIES
   cliver (~> 0.3)
@@ -116,11 +117,11 @@ DEPENDENCIES
   rake (~> 12.3)
   redcarpet (~> 3.4)
   rspec (~> 3.6)
-  rubocop (~> 0.56)
+  rubocop (~> 1.0)
   rugged (~> 1.0)
   sham (~> 2.0)
   sys-proc (~> 1.1)
   yard (~> 0.9)
 
 BUNDLED WITH
-   2.1.4
+   2.2.2
