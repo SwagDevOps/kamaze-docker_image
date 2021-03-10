@@ -38,5 +38,4 @@ end
 group :repl do
   gem 'interesting_methods', '~> 0.1'
   gem 'pry', '~> 0.11'
-  gem 'pry-coolline', '~> 0.2'
 end
