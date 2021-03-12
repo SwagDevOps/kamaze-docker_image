@@ -10,7 +10,7 @@ description: 'Provide rake tasks to manage image.'
 homepage: 'https://github.com/SwagDevOps/kamaze-docker_image'
 licenses: ['GPL-3.0']
 license_header: |
-  Copyright (C) 2017-2019 Dimitri Arrigoni <dimitri@arrigoni.me>
+  Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
   License GPLv3+: GNU GPL version 3 or later
   <http://www.gnu.org/licenses/gpl.html>.
   This is free software: you are free to change and redistribute it.
