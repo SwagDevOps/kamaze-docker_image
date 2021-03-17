@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
@@ -11,7 +11,7 @@ require_relative '../docker_image'
 # Loader for tasks (using eval binding)
 class Kamaze::DockerImage::Loader
   autoload :Pathname, 'pathname'
-  autoload :Empty, "#{__dir__}/loader/empty"
+  autoload :Context, "#{__dir__}/loader/context"
 
   # @param [Kamaze::DockerImage] image
   def initialize(image)
@@ -22,32 +22,25 @@ class Kamaze::DockerImage::Loader
   #
   # @return [self]
   def call
-    if loadable?
-      empty_binding.tap do |b|
-        b.local_variable_set(:image, image)
-        b.eval(content)
+    self.tap do
+      if loadable?
+        context.call do |b|
+          b.local_variable_set(:image, image)
+          b.eval(content)
+        end
       end
     end
-
-    self
   end
 
   # @return [Boolean]
   def loadable?
-    empty_binding.local_variable_get(:ready)
+    context.dsl?
   end
 
   protected
 
   # @return [Kamaze::DockerImage]
   attr_reader :image
-
-  # Get en empty binding.
-  #
-  # @return [Empty]
-  def empty_binding
-    Empty.binding
-  end
 
   # @return [Pathname]
   def file
@@ -59,5 +52,10 @@ class Kamaze::DockerImage::Loader
   # @return [String]
   def content
     file.read
+  end
+
+  # @return [Module<Context>]
+  def context
+    Context
   end
 end

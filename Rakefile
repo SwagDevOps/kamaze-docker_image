@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'bundler/setup'
 require_relative 'lib/kamaze-docker_image'
 require 'kamaze/docker_image'
 require 'kamaze/project'
@@ -13,7 +14,7 @@ Kamaze.project do |project|
   project.tasks   = [
     'cs:correct', 'cs:control', 'cs:pre-commit',
     'doc', 'doc:watch',
-    'gem', 'gem:install',
+    'gem', 'gem:install', 'gem:push',
     'misc:gitignore',
     'shell', 'sources:license', 'test', 'version:edit',
   ]

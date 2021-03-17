@@ -1,18 +1,26 @@
 # frozen_string_literal: true
 
-# bundle install --path vendor/bundle
+# ```sh
+# bundle config set clean 'true'
+# bundle config set path 'vendor/bundle'
+# bundle install
+# ```
 source 'https://rubygems.org'
 
 group :default do
   gem 'cliver', '~> 0.3'
-  gem 'docker-api', '~> 1.34'
   gem 'kamaze-version', '~> 1.0'
 end
 
 group :development do
-  gem 'kamaze-project', '~> 1.0', '>= 1.0.3'
+  { github: 'SwagDevOps/kamaze-project', branch: 'develop' }.tap do |options|
+    gem(*['kamaze-project'].concat([options]))
+  end
+
   gem 'listen', '~> 3.1'
-  gem 'rubocop', '~> 0.56'
+  gem 'rake', '~> 12.3'
+  gem 'rubocop', '~> 1.0'
+  gem 'rugged', '~> 1.0'
   gem 'sys-proc', '~> 1.1'
 end
 
@@ -30,5 +38,4 @@ end
 group :repl do
   gem 'interesting_methods', '~> 0.1'
   gem 'pry', '~> 0.11'
-  gem 'pry-coolline', '~> 0.2'
 end

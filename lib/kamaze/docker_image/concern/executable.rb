@@ -6,14 +6,19 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# @type [Kamaze::DockerImage::Loader::Helper] helper
+require_relative '../concern'
 
-if image.available_commands.include?(:run)
-  desc 'Run a command in a new container'
+# PProvide method to retrieve path to docker executable.
+module Kamaze::DockerImage::Concern::Executable
+  autoload(:Cliver, 'cliver')
 
-  task helper.appoint(:run), [:command] do |task, args|
-    helper.call(task, args) { image.run(args[:command]) }
+  protected
 
-    task.reenable
+  # Get executable
+  #
+  # @raise [Cliver::Dependency::NotFound]
+  # @return [String]
+  def executable
+    Cliver.detect!(:docker).freeze
   end
 end

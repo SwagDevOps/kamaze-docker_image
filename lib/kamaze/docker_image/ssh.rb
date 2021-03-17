@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../docker_image'
-require_relative 'concern/docker'
 autoload :YAML, 'yaml'
 autoload :Pathname, 'pathname'
 autoload :Shellwords, 'shellwords'
@@ -24,8 +23,9 @@ autoload :Cliver, 'cliver'
 # ssh = Kamaze::DockerImage::SSH.new(run_as: 'kamaze_sample_image')
 # ```
 class Kamaze::DockerImage::SSH < Hash
-  include Kamaze::DockerImage::Concern::Docker
+  include Kamaze::DockerImage::Concern::Containers
 
+  # noinspection RubyConstantNamingConvention
   Command = Kamaze::DockerImage::Command
 
   # @return [Hash]
@@ -47,9 +47,9 @@ class Kamaze::DockerImage::SSH < Hash
   #
   # @see #command
   def call(cmd = nil, &block)
-    raise Errno::ENONET unless network?
-    wait
-  rescue Timeout::Error # rubocop:disable Lint/HandleExceptions
+    network? ? wait : (raise Errno::ENONET)
+  rescue Timeout::Error
+    nil
   ensure
     command(cmd).run(&block)
   end
@@ -125,15 +125,15 @@ class Kamaze::DockerImage::SSH < Hash
   #
   # @return [Array<String>]
   def network
-    container = fetch_containers(config.fetch(:run_as), [:running])[0]
+    # container = fetch_containers(config.fetch(:run_as), [:running])[0]
+    containers[config.fetch(:run_as)].yield_self do |container|
+      return [] if container.nil?
+      return [] unless container.running?
 
-    return [] if container.nil?
-
-    container.info['NetworkSettings']['Networks']
-             .to_a
-             .keep_if { |row| row[1].to_h['IPAddress'] }
-             .map { |row| row[1]['IPAddress'] }
-             .compact
+      container.info
+               .fetch('NetworkSettings').fetch('Networks')
+               .values.keep_if { |v| v.to_h['IPAddress'] }.map { |v| v['IPAddress'] }.compact
+    end
   end
 
   # @return [Boolean]

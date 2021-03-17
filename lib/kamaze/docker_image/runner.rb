@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../docker_image'
-require_relative 'concern/docker'
 
 # Runner provide methods to execute image related actions
 #
 # @see #actions
 # @see Kamaze::DockerImage::Concern::Setup#default_commands
 class Kamaze::DockerImage::Runner
-  include Kamaze::DockerImage::Concern::Docker
+  include Kamaze::DockerImage::Concern::Containers
 
+  # noinspection RubyConstantNamingConvention
   Command = Kamaze::DockerImage::Command
 
   # Available actions
@@ -91,14 +91,16 @@ class Kamaze::DockerImage::Runner
   #
   # @return [Boolean]
   def started?
-    !fetch_containers(config.fetch(:run_as)).empty?
+    # !fetch_containers(config.fetch(:run_as)).empty?
+    config.fetch(:run_as).yield_self { |name| !containers[name].nil? }
   end
 
   # Denote container is running.
   #
   # @return [Boolean]
   def running?
-    !fetch_containers(config.fetch(:run_as), :running).empty?
+    # !fetch_containers(config.fetch(:run_as), :running).empty?
+    config.fetch(:run_as).yield_self { |name| containers[name]&.running? }
   end
 
   protected

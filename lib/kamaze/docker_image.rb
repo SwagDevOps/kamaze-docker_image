@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
@@ -64,18 +64,20 @@ class Kamaze::DockerImage
   # @return [String]
   attr_reader :exec_command
 
-  autoload :Pathname, 'pathname'
+  autoload(:Pathname, 'pathname')
+  autoload(:Open3, 'open3')
+  autoload(:JSON, 'json')
 
-  autoload :Command, "#{__dir__}/docker_image/command"
-  autoload :Runner, "#{__dir__}/docker_image/runner"
-  autoload :SSH, "#{__dir__}/docker_image/ssh"
-  autoload :Loader, "#{__dir__}/docker_image/loader"
-  autoload :VERSION, "#{__dir__}/docker_image/version"
+  {
+    Concern: 'concern',
+    Command: 'command',
+    Runner: 'runner',
+    SSH: 'ssh',
+    Loader: 'loader',
+    VERSION: 'version',
+  }.each { |k, v| autoload(k, "#{__dir__}/docker_image/#{v}") }
 
-  [:setup, :readable_attrs].each do |req|
-    require_relative "#{__dir__}/docker_image/concern/#{req}"
-  end
-
+  include Concern::Executable
   include Concern::Setup
   include Concern::ReadableAttrs
 
@@ -85,6 +87,22 @@ class Kamaze::DockerImage
     @runner = Runner.new(self)
     @ssh = SSH.new(self).freeze
     tasks_load! if tasks_load?
+  end
+
+  # Get image id (through docker command).
+  #
+  # @return [String, nil]
+  def id
+    # docker image list --format "{{json .ID}}" image_name:image_version
+    [
+      self.to_h[:docker_bin] || executable
+    ].concat(['image', 'list', '--format', '{{json .ID}}', self.to_s]).yield_self do |command|
+      Open3.capture3(*command).tap do |stdout, _, status|
+        return nil unless status.success?
+
+        return stdout.lines.empty? ? nil : JSON.parse(stdout.lines.first)
+      end
+    end
   end
 
   # Denote image is started.
@@ -143,17 +161,13 @@ class Kamaze::DockerImage
 
   # @see Runner#actions
   def method_missing(method, *args, &block)
-    if respond_to_missing?(method)
-      return runner.public_send(method, *args, &block)
-    end
-
-    super
+    respond_to_missing?(method) ? runner.public_send(method, *args, &block) : super
   end
 
   def respond_to_missing?(method, include_private = false)
-    flag = (runner&.actions).to_a.include?(method.to_sym)
-
-    flag || super(method, include_private)
+    # rubocop:disable Style/RedundantParentheses
+    (runner&.actions).to_a.include?(method.to_sym) || super(method, include_private)
+    # rubocop:enable Style/RedundantParentheses
   end
 
   protected

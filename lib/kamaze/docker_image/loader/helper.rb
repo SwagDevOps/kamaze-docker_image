@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
@@ -36,6 +36,9 @@ class Kamaze::DockerImage::Loader::Helper
 
   # Execute related ``pre_`` and ``post_`` tasks
   #
+  # @param [Rake::Task] task
+  # @param [Hash{Symbol => Object}] args
+  #
   # Sample of use:
   #
   # ```ruby
@@ -47,7 +50,7 @@ class Kamaze::DockerImage::Loader::Helper
   #   pp(task, args)
   # end
   # ```
-  def wrap(task, **args, &block)
+  def wrap(task, args = [], &block)
     on_pre(task, args)
     block.call
     on_post(task, args)
@@ -68,12 +71,12 @@ class Kamaze::DockerImage::Loader::Helper
   end
 
   # @param [Rake::Task] task
-  def on_pre(task, **args)
+  def on_pre(task, args)
     task_call(on: :pre, from: task, args: args)
   end
 
   # @param [Rake::Task] task
-  def on_post(task, **args)
+  def on_post(task, args)
     task_call(on: :post, from: task, args: args)
   end
 

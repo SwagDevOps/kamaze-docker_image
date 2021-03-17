@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
@@ -15,7 +15,7 @@ require_relative '../runner'
 # @see #shape
 # @see #config=
 class Kamaze::DockerImage::Runner::Storage < Hash
-  autoload :Cliver, 'cliver'
+  include(Kamaze::DockerImage::Concern::Executable)
 
   # @param [Hash] config
   def config=(config)
@@ -54,7 +54,7 @@ class Kamaze::DockerImage::Runner::Storage < Hash
   # @raise [Cliver::Dependency::NotFound]
   # @return [String]
   def executable
-    Cliver.detect!(config[:docker_bin] || :docker).freeze
+    config[:docker_bin] || super
   end
 
   # Format given command

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
@@ -13,29 +13,17 @@ require_relative '../loader'
 # Sample of use:
 #
 # ```ruby
-# Empty.binding.tap do |b|
+# Context.call do |b|
 #   b.local_variable_set(:answer, 42)
 #   b.local_variable_set(:home, '127.0.0.1')
 #
 #   b.eval(content)
 # end
 # ```
-module Kamaze::DockerImage::Loader::Empty
+module Kamaze::DockerImage::Loader::Context
   class << self
-    # @return [Binding]
-    def binding
-      load_dsl
-
-      super.tap do |b|
-        b.local_variable_set(:ready, dsl?)
-      end
-    end
-
-    # @return [Rake::DSL|nil]
-    def dsl
-      Object.const_get('Rake::DSL')
-    rescue NameError
-      nil
+    def call
+      yield(binding)
     end
 
     # Denote ``DSL`` is defined.
@@ -47,13 +35,23 @@ module Kamaze::DockerImage::Loader::Empty
 
     protected
 
+    # @return [Binding]
+    def binding
+      -> { super }.tap { load_dsl }.call
+    end
+
+    # @return [Rake::DSL, nil]
+    def dsl
+      Object.const_get('Rake::DSL')
+    rescue NameError
+      nil
+    end
+
     # Apply ``Rake::DSL``
     #
     # @return [self]
     def load_dsl
-      self.extend(dsl) if dsl
-
-      self
+      self.tap { self.extend(dsl) if dsl? }
     end
   end
 end
