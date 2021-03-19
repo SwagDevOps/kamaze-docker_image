@@ -31,7 +31,6 @@ end
 Kamaze::DockerImage.new do |config|
   config.name     = 'kamaze/sample_image'
   config.version  = '0.0.1'
-
   config.path     = 'image'
   config.run_as   = config.name.tr('/', '_')
   config.tasks_ns = 'docker'
@@ -39,7 +38,5 @@ Kamaze::DockerImage.new do |config|
     enabled: true,
   }
 end.tap do |image|
-  self.singleton_class.__send__(:define_method, :image) do
-    image
-  end
+  self.singleton_class.__send__(:define_method, :image) { image }
 end
