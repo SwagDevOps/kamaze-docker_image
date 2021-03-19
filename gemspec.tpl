@@ -5,6 +5,7 @@
 @files = [
     '.yardopts',
     '.rubocop.yml',
+    'README.md',
     'bin/*',
     'lib/**/*.rb',
     'lib/**/version.yml'

@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.files         = [
     ".rubocop.yml",
     ".yardopts",
+    "README.md",
     "lib/kamaze-docker_image.rb",
     "lib/kamaze/docker_image.rb",
     "lib/kamaze/docker_image/command.rb",
