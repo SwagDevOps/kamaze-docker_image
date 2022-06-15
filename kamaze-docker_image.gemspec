@@ -14,9 +14,7 @@ Gem::Specification.new do |s|
   s.email       = "dimitri@arrigoni.me"
   s.homepage    = "https://github.com/SwagDevOps/kamaze-docker_image"
 
-  # MUST follow the higher required_ruby_version
-  # requires version >= 2.3.0 due to safe navigation operator &
-  s.required_ruby_version = ">= 2.3.0"
+  s.required_ruby_version = ">= 2.6.0"
   s.require_paths = ["lib"]
   s.files         = [
     ".rubocop.yml",
