@@ -7,15 +7,24 @@
 # ```
 source 'https://rubygems.org'
 
+def github(repo, options = {}, &block)
+  block ||= lambda do
+    { github: repo }.merge(options).then do |params|
+      gem(*[File.basename(repo)].concat([params]))
+    end
+  end
+
+  # noinspection RubySuperCallWithoutSuperclassInspection
+  super(repo, options, &block)
+end
+
 group :default do
   gem 'cliver', '~> 0.3'
   gem 'kamaze-version', '~> 1.0'
 end
 
 group :development do
-  { github: 'SwagDevOps/kamaze-project', branch: 'develop' }.tap do |options|
-    gem(*['kamaze-project'].concat([options]))
-  end
+  github 'SwagDevOps/kamaze-project', { branch: 'develop' }
 
   gem 'listen', '~> 3.1'
   gem 'rake', '~> 12.3'
