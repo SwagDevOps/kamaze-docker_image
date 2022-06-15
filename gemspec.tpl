@@ -28,9 +28,7 @@ Gem::Specification.new do |s|
   s.email       = #{quote(@email)}
   s.homepage    = #{quote(@homepage)}
 
-  # MUST follow the higher required_ruby_version
-  # requires version >= 2.3.0 due to safe navigation operator &
-  s.required_ruby_version = ">= 2.3.0"
+  s.required_ruby_version = #{quote(@required_ruby_version)}
   s.require_paths = ["lib"]
   s.files         = [
     <?rb for file in @files ?>
