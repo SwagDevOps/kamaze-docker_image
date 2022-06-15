@@ -22,11 +22,8 @@ autoload :Cliver, 'cliver'
 #
 # ssh = Kamaze::DockerImage::SSH.new(run_as: 'kamaze_sample_image')
 # ```
-class Kamaze::DockerImage::SSH < Hash
+class Kamaze::DockerImage::SSH < ::Hash
   include Kamaze::DockerImage::Concern::Containers
-
-  # noinspection RubyConstantNamingConvention
-  Command = Kamaze::DockerImage::Command
 
   # @return [Hash]
   attr_reader :config
@@ -35,9 +32,11 @@ class Kamaze::DockerImage::SSH < Hash
   #
   # @see Kamaze::DockerImage::Concern::Setup#default_commands
   def initialize(image)
-    defaults.merge(image.to_h[:ssh].to_h).tap do |ssh|
-      @config = image.to_h.merge(ssh: ssh).freeze
-    end.each { |k, v| self[k] = v }
+    super().tap do
+      defaults.merge(image.to_h[:ssh].to_h).tap do |ssh|
+        @config = image.to_h.merge(ssh: ssh).freeze
+      end.each { |k, v| self[k] = v }
+    end.freeze
   end
 
   # Connect to ssh (executing optional command ``cmd``).
@@ -85,7 +84,7 @@ class Kamaze::DockerImage::SSH < Hash
     config.fetch(:ssh).fetch(:command)
           .map { |w| w % params }
           .push(*cmd.to_a)
-          .tap { |command| return Command.new(command, config) }
+          .tap { |command| return Kamaze::DockerImage::Command.new(command, config) }
   end
 
   # Params used to shape command.

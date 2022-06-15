@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2020 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
@@ -12,6 +12,7 @@ require_relative '../docker_image'
 class Kamaze::DockerImage::Loader
   autoload :Pathname, 'pathname'
   autoload :Context, "#{__dir__}/loader/context"
+  autoload :Helper, "#{__dir__}/loader/helper"
 
   # @param [Kamaze::DockerImage] image
   def initialize(image)
@@ -22,12 +23,15 @@ class Kamaze::DockerImage::Loader
   #
   # @return [self]
   def call
+    return self unless loadable?
+
     self.tap do
-      if loadable?
-        context.call do |b|
-          b.local_variable_set(:image, image)
-          b.eval(content)
-        end
+      context.call do |b|
+        b.local_variable_set(:helper, Helper.new(image))
+        b.local_variable_set(:image, image)
+        # @todo add a lister for tasks -------------------------------
+        b.local_variable_set(:tasks_dir, tasks_dir)
+        b.eval(content)
       end
     end
   end
@@ -57,5 +61,10 @@ class Kamaze::DockerImage::Loader
   # @return [Module<Context>]
   def context
     Context
+  end
+
+  # @return [Pathname]
+  def tasks_dir
+    Pathname.new(__dir__).join('loader', 'tasks')
   end
 end
