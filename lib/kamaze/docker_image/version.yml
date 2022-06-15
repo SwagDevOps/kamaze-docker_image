@@ -1,10 +1,10 @@
 ---
 major: 0
 minor: 0
-patch: 5
+patch: 6
 authors: ['Dimitri Arrigoni']
 email: 'dimitri@arrigoni.me'
-date: '2021-03-17'
+date: '2022-06-15'
 summary: 'Easyfier for (docker) image projects'
 description: 'Provide rake tasks to manage image.'
 homepage: 'https://github.com/SwagDevOps/kamaze-docker_image'
